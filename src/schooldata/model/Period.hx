@@ -1,11 +1,11 @@
-package app.coredata.model;
+package schooldata.model;
 
 import sys.db.Types;
 import ufront.db.Object;
 using ufront.util.TimeOfDayTools;
 using Lambda;
 
-import app.coredata.model.*;
+import schooldata.model.*;
 
 class Period extends Object
 {

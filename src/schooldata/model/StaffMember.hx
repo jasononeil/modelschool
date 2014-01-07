@@ -1,17 +1,18 @@
-package app.coredata.model;
+package schooldata.model;
 
 import sys.db.Types;
 import ufront.db.Object;
 import ufront.db.ManyToMany;
 import ufront.auth.model.User;
 
-import app.coredata.model.*;
+import schooldata.model.*;
 
 class StaffMember extends Object
 {
 	public var title:SString<20>;
-	public var mazeKey:SString<4>;
+	public var dbKey:SString<4>;
 	public var active:SBool;
+	public var email:String;
 
 	public var person:BelongsTo<Person>;
 	@:relationKey(teacherID) public var classTimes:HasMany<ClassTime>;
@@ -23,7 +24,6 @@ class StaffMember extends Object
 	@:skip public var classes(get,null):List<SchoolClass>;
 	@:skip public var teachingName(get,null):String;
 	@:skip public var fullName(get,null):String;
-	@:skip public var email(get,null):String;
 
 	function get_classes() {
 		var classes = new List();
@@ -46,12 +46,6 @@ class StaffMember extends Object
 			return '$title ${person.firstName} ${person.surname}';
 		else 
 			return '$title ${person.firstName} ${person.middleNames} ${person.surname}';
-	}
-
-	function get_email() {
-		var username = person.user.username;
-		var domain = "sheridancollege.com.au";
-		return '$username@$domain';
 	}
 
 	#if server 

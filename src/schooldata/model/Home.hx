@@ -1,13 +1,12 @@
-package app.coredata.model;
+package schooldata.model;
 
 import ufront.db.Object;
 import sys.db.Types;
-import app.coredata.model.*;
+import schooldata.model.*;
 
 class Home extends Object
 {
-	public var mazeKey:String;
-
+	public var dbKey:String;
 	public var address:SString<255>;
 	public var state:SString<10>;
 	public var postcode:SString<5>;

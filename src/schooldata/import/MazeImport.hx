@@ -1,9 +1,9 @@
-package tasks;
-import app.coredata.model.*;
+package schooldata.import;
+import schooldata.model.*;
 import ufront.auth.model.*;
 import app.student.model.Note;
 import app.attendance.model.*;
-import app.coredata.model.Person.Gender;
+import schooldata.model.Person.Gender;
 import haxe.ds.StringMap;
 import haxe.Utf8;
 import sys.FileSystem;
@@ -55,7 +55,7 @@ class MazeImport extends TaskSet
 		var studentGroup = Group.manager.select($name == "students");
 		var usersGroup = Group.manager.select($name == "users");
 
-		var mazeKeysNotFound = allCurrentStudents.map( function(s) return s.mazeKey );
+		var dbKeysNotFound = allCurrentStudents.map( function(s) return s.dbKey );
 
 		var i = 0;
 		for (row in rs)
@@ -68,12 +68,12 @@ class MazeImport extends TaskSet
 			var sProfile:StudentProfile;
 
 			// Check if the rows already exist
-			var mazeKey:String = cast row.STKEY;
+			var dbKey:String = cast row.STKEY;
 
-			mazeKeysNotFound.remove( mazeKey );
+			dbKeysNotFound.remove( dbKey );
 
 			var action = "";
-			s = allCurrentStudents.filter(function (s) { return s.mazeKey == mazeKey; }).first();
+			s = allCurrentStudents.filter(function (s) { return s.dbKey == dbKey; }).first();
 			if (s != null)
 			{
 				p = allCurrentPeople.filter(function (p) { return p.id == s.personID; }).first();
@@ -129,10 +129,10 @@ class MazeImport extends TaskSet
 
 			// Student;
 			var rollGroup = allCurrentRollGroups.filter(function (rg) return rg.name == row.ROLL_GROUP).first();
-			var family = allCurrentFamilies.filter(function (fam) return fam.mazeKey == row.FAMILY).first();
+			var family = allCurrentFamilies.filter(function (fam) return fam.dbKey == row.FAMILY).first();
 			var schoolHouse = allCurrentSchoolHouses.filter(function (sh) return sh.shortName == row.HOUSE).first();
 			if (s.graduatingYear != graduatingYear
-				|| s.mazeKey != row.STKEY
+				|| s.dbKey != row.STKEY
 				|| s.personID != p.id
 				|| s.rollGroupID != rollGroup.id
 				|| s.schoolHouseID != schoolHouse.id
@@ -141,7 +141,7 @@ class MazeImport extends TaskSet
 				)
 			{
 				s.graduatingYear = graduatingYear;
-				s.mazeKey = row.STKEY;
+				s.dbKey = row.STKEY;
 				s.active = true;
 				s.person = p;
 				
@@ -222,11 +222,11 @@ class MazeImport extends TaskSet
 			sProfile.studentID = s.id;
 			sProfile.save();
 			
-			trace ('$action ${p.firstName} ${p.surname} ${u.username} ${s.mazeKey} ($i/$count)');
+			trace ('$action ${p.firstName} ${p.surname} ${u.username} ${s.dbKey} ($i/$count)');
 		}
 
-		for ( mazeKey in mazeKeysNotFound ) {
-			var s = allCurrentStudents.filter(function (s) { return s.mazeKey == mazeKey; }).first();
+		for ( dbKey in dbKeysNotFound ) {
+			var s = allCurrentStudents.filter(function (s) { return s.dbKey == dbKey; }).first();
 			s.classes.clear();
 			s.active = false;
 			s.save();
@@ -317,10 +317,10 @@ class MazeImport extends TaskSet
 			var sProfile:StaffMemberProfile;
 
 			// Check if the rows already exist
-			var mazeKey:String = cast row.SFKEY;
+			var dbKey:String = cast row.SFKEY;
 
 			var action:String;
-			s = allCurrentStaff.filter(function (s) { return s.mazeKey == mazeKey; }).first();
+			s = allCurrentStaff.filter(function (s) { return s.dbKey == dbKey; }).first();
 			if (s != null)
 			{
 				p = allCurrentPeople.filter(function (p) { return p.id == s.personID; }).first();
@@ -340,10 +340,10 @@ class MazeImport extends TaskSet
 
 			// User;
 			var email:String = sanitiseString(row.SF_EMAIL);
-			if (email == null) email = 'unknownuser_$mazeKey@$domain';
+			if (email == null) email = 'unknownuser_$dbKey@$domain';
 			var username:String;
-			if ( usernameCorrections.exists(mazeKey) ) {
-				username = usernameCorrections[mazeKey];
+			if ( usernameCorrections.exists(dbKey) ) {
+				username = usernameCorrections[dbKey];
 			}
 			else if ( email.indexOf(domain)>-1 )
 			{
@@ -392,13 +392,13 @@ class MazeImport extends TaskSet
 			// StaffMember:
 			if (p != s.person
 				|| row.TITLE != s.title
-				|| s.mazeKey != mazeKey
+				|| s.dbKey != dbKey
 				|| s.active != active )
 			{
 				s.active = active;
 				s.person = p;
 				s.title = sanitiseString(row.TITLE);
-				s.mazeKey = mazeKey;
+				s.dbKey = dbKey;
 				s.save();
 			}
 
@@ -414,11 +414,11 @@ class MazeImport extends TaskSet
 			sProfile.staffMember = s;
 			sProfile.save();
 
-			trace ('$action ${p.firstName} ${p.surname} ${u.username} ${s.mazeKey} ($i/$count)');
+			trace ('$action ${p.firstName} ${p.surname} ${u.username} ${s.dbKey} ($i/$count)');
 		}
 
 		// Create a staff member called "No Teacher"
-		var noTeacherStaffMember:StaffMember = allCurrentStaff.filter(function (s) { return s.mazeKey == "nt"; }).first();
+		var noTeacherStaffMember:StaffMember = allCurrentStaff.filter(function (s) { return s.dbKey == "nt"; }).first();
 		if (noTeacherStaffMember == null)
 		{
 			noTeacherStaffMember = new StaffMember();
@@ -438,7 +438,7 @@ class MazeImport extends TaskSet
 			noTeacherP.save();
 
 			noTeacherStaffMember.person = noTeacherP;
-			noTeacherStaffMember.mazeKey = "nt";
+			noTeacherStaffMember.dbKey = "nt";
 			noTeacherStaffMember.title = "Mr.";
 			noTeacherStaffMember.active = false;
 			noTeacherStaffMember.save();
@@ -480,7 +480,7 @@ class MazeImport extends TaskSet
 			var row:Dynamic = r;
 			i++;
 			var action:String;
-			var h:Home = allCurrentHomes.filter(function (home) return home.mazeKey == row.UMKEY).first();
+			var h:Home = allCurrentHomes.filter(function (home) return home.dbKey == row.UMKEY).first();
 			if (h == null) 
 			{
 				action = "Created";
@@ -489,7 +489,7 @@ class MazeImport extends TaskSet
 			}
 			else action = "Updated";
 
-			h.mazeKey = row.UMKEY;
+			h.dbKey = row.UMKEY;
 			h.state = sanitiseString( row.STATE );
 			h.postcode = sanitiseString( row.POSTCODE );
 			h.phone = sanitiseString( row.TELEPHONE );
@@ -505,7 +505,7 @@ class MazeImport extends TaskSet
 			if ( address03!="" ) h.address += "\n"+address03;
 
 			h.save();
-			trace ('$action Home ${h.mazeKey} ($i/$homeCount)');
+			trace ('$action Home ${h.dbKey} ($i/$homeCount)');
 		}
 
 		var i = 0;
@@ -514,7 +514,7 @@ class MazeImport extends TaskSet
 			var row:Dynamic = r;
 			i++;
 			var action:String;
-			var f:Family = allCurrentFamilies.filter(function (fam) return fam.mazeKey == row.DFKEY).first();
+			var f:Family = allCurrentFamilies.filter(function (fam) return fam.dbKey == row.DFKEY).first();
 			if (f == null) 
 			{
 				action = "Created";
@@ -531,7 +531,7 @@ class MazeImport extends TaskSet
 			var motherName = (motherSurname != "") ? '$motherFirstName $motherSurname' : '$motherFirstName $familySurname';
 			var fatherName = (fatherSurname != "") ? '$fatherFirstName $fatherSurname' : '$fatherFirstName $familySurname';
 
-			f.mazeKey = row.DFKEY;
+			f.dbKey = row.DFKEY;
 			f.motherName = motherName;
 			f.motherMobile = sanitiseString(row.MMOBILE);
 			f.motherWorkPhone = sanitiseString(row.MBUS_PHONE);
@@ -545,8 +545,8 @@ class MazeImport extends TaskSet
 			f.mailTitle = sanitiseString(row.MAILTITLE);
 			f.billingTitle = sanitiseString(row.BILLINGTITLE);
 
-			function getHome( mazeKey:String ) {
-				return allCurrentHomes.filter( function (h) return h.mazeKey==mazeKey ).first();
+			function getHome( dbKey:String ) {
+				return allCurrentHomes.filter( function (h) return h.dbKey==dbKey ).first();
 			}
 
 			f.homeAddress = getHome( row.HOMEKEY );
@@ -554,7 +554,7 @@ class MazeImport extends TaskSet
 			f.billingAddress = getHome( row.BILLINGKEY );
 
 			f.save();
-			trace ('$action Family ${f.mazeKey} ${f.motherName} ${f.fatherName} ($i/$familyCount)');
+			trace ('$action Family ${f.dbKey} ${f.motherName} ${f.fatherName} ($i/$familyCount)');
 		}
 	}
 
@@ -588,9 +588,9 @@ class MazeImport extends TaskSet
 			r.description = sanitiseString(row.DESCRIPTION);
 
 			// teacher
-			var teacherMazeKey = sanitiseString(row.TEACHER);
-			var teacher = allCurrentTeachers.filter(function (t) return t.mazeKey == teacherMazeKey).first();
-			if (teacher == null) trace ('Teacher $teacherMazeKey not found for roll group $name');
+			var teacherdbKey = sanitiseString(row.TEACHER);
+			var teacher = allCurrentTeachers.filter(function (t) return t.dbKey == teacherdbKey).first();
+			if (teacher == null) trace ('Teacher $teacherdbKey not found for roll group $name');
 			else r.teacher = teacher;
 
 			// yeagroup
@@ -661,17 +661,17 @@ class MazeImport extends TaskSet
 
 			#if QBC 
 				var rogueSecondaryFormClass = sc.fullName.startsWith("FORM ");
-				var duplicatePrimaryFormClass = sc.mazeKey.startsWith("_rg") && !sc.mazeKey.startsWith("_rgY") && sc.yeargroup<7;
+				var duplicatePrimaryFormClass = sc.dbKey.startsWith("_rg") && !sc.dbKey.startsWith("_rgY") && sc.yeargroup<7;
 				needsDeleting = rogueSecondaryFormClass || duplicatePrimaryFormClass;
 			#elseif ACBC
-				var mazeFormClass = sc.fullName.indexOf('Form')>-1 && sc.mazeKey.startsWith("_rg")==false;
+				var mazeFormClass = sc.fullName.indexOf('Form')>-1 && sc.dbKey.startsWith("_rg")==false;
 				// If each class time falls outside of the periods labelled "FORM", then it's not a form period.  Maybe it's an assembly etc
 				var notInFormPeriod = sc.classTimes.foreach( function (ct) return ct.period.name.indexOf("FORM")>-1 );
 				needsDeleting = (mazeFormClass&&notInFormPeriod);
 			#end 
 
 			if ( needsDeleting ) {
-				trace ('Deleting $sc (${sc.mazeKey} ${sc.fullName}) with ClassTimes ${sc.classTimes}');
+				trace ('Deleting $sc (${sc.dbKey} ${sc.fullName}) with ClassTimes ${sc.classTimes}');
 				for (ct in sc.classTimes) {
 					ct.delete();
 				}
@@ -743,13 +743,13 @@ class MazeImport extends TaskSet
 			var s:Subject;
 
 			// Check if the rows already exist, create it if not
-			var mazeKey:String = row.SUKEY;
-			s = allCurrentSubjects.filter(function (s) { return s.mazeKey == mazeKey; }).first();
+			var dbKey:String = row.SUKEY;
+			s = allCurrentSubjects.filter(function (s) { return s.dbKey == dbKey; }).first();
 			var action = (s == null) ? "Created" : "Updated";
 			
 			if (s == null) s = new Subject();
 			s.name = sanitiseString(row.FULLNAME);
-			s.mazeKey = mazeKey;
+			s.dbKey = dbKey;
 
 			if (row.SUBJECT_ACADEMIC_YEAR != null)
 			{
@@ -774,7 +774,7 @@ class MazeImport extends TaskSet
 				var teacherMazeID:String = row.CONTACT_TEACHER;
 				if (teacherMazeID != null && teacherMazeID != "")
 				{
-					var teacher = allCurrentStaff.filter(function (staff) { return staff.mazeKey == teacherMazeID; }).first();
+					var teacher = allCurrentStaff.filter(function (staff) { return staff.dbKey == teacherMazeID; }).first();
 					if (teacher != null) s.contactTeacher = teacher;
 				}
 			}
@@ -783,7 +783,7 @@ class MazeImport extends TaskSet
 			row.SEMESTER; // Seems to be 0,1,2,3 ... not sure what they mean
 
 			s.save();
-			trace ('$action ${s.name} ${s.yeargroup} ${s.mazeKey} ($i/$count)');
+			trace ('$action ${s.name} ${s.yeargroup} ${s.dbKey} ($i/$count)');
 		}
 	}
 
@@ -940,14 +940,14 @@ class MazeImport extends TaskSet
 		for (rg in rollGroups)
 		{
 			var isPrimarySchool = AppConfig.primaryYears().has(rg.yeargroup);
-			var mazeKey = "_rg" + rg.name;
+			var dbKey = "_rg" + rg.name;
 			rg.yeargroup = (rg.yeargroup == null) ? 1 : rg.yeargroup;
-			trace ('Working on Rollgroup: $mazeKey (Yr ${rg.yeargroup})');
+			trace ('Working on Rollgroup: $dbKey (Yr ${rg.yeargroup})');
 			
 			// Get or create suShortbject
-			var su = allCurrentSubjects.filter(function (su) return su.mazeKey == mazeKey).first();
+			var su = allCurrentSubjects.filter(function (su) return su.dbKey == dbKey).first();
 			if (su == null) su = new Subject();
-			su.mazeKey = mazeKey;
+			su.dbKey = dbKey;
 			su.contactTeacherID = rg.teacherID;
 			su.name = rg.description;
 			su.yeargroup = rg.yeargroup;
@@ -981,14 +981,14 @@ class MazeImport extends TaskSet
 				#end 
 
 				// Get or create school class
-				var sc = allCurrentSchoolClasses.filter(function (sc) return sc.mazeKey == mazeKey).first();
+				var sc = allCurrentSchoolClasses.filter(function (sc) return sc.dbKey == dbKey).first();
 				if (sc == null) sc = new SchoolClass();
 				sc.shortName = rg.name;
 				sc.fullName = rg.description;
 				sc.yeargroup = rg.yeargroup;
 				sc.yeargroup2 = rg.yeargroup2;
 				sc.frequency = isPrimarySchool ? periods.length*5 : 5;
-				sc.mazeKey = mazeKey;
+				sc.dbKey = dbKey;
 				sc.subjectID = su.id;
 				sc.save();
 				trace (' School Class created with ID ${sc.id}');
@@ -1201,7 +1201,7 @@ class MazeImport extends TaskSet
 			{
 				classTimesMap.set(ct.occurence, new MPair(ct,false));
 			}
-			schoolClasses.set(sc.mazeKey, { sc: sc, scSaved: false, cts: classTimesMap, row: null });
+			schoolClasses.set(sc.dbKey, { sc: sc, scSaved: false, cts: classTimesMap, row: null });
 		}
 
 		// Build a hash of all our Rooms
@@ -1219,7 +1219,7 @@ class MazeImport extends TaskSet
 		for (row in rs)
 		{
 
-			var mazeKey = Std.string(row.IDENT); // one per school class
+			var dbKey = Std.string(row.IDENT); // one per school class
 
 			// Skip any form classes...
 
@@ -1227,9 +1227,9 @@ class MazeImport extends TaskSet
 			for (p in AppConfig.formPeriodNums()) {
 				if (p == thisPeriodPos) {
 					trace ('Skipping form class ... ${row.FULLNAME}');
-					if ( schoolClasses.exists(mazeKey) ) {
+					if ( schoolClasses.exists(dbKey) ) {
 						// Delete an existing entry
-						var scData = schoolClasses[mazeKey];
+						var scData = schoolClasses[dbKey];
 						scData.sc.delete();
 						trace ('  Deleted existing SchoolClass entry for this form class ${scData.sc}');
 						for ( ct in scData.cts ) {
@@ -1238,7 +1238,7 @@ class MazeImport extends TaskSet
 								trace ('  Deleted existing ClassTime entry for this form class ${ct.a}');
 							}
 						}
-						schoolClasses.remove( mazeKey );
+						schoolClasses.remove( dbKey );
 					}
 					continue;	
 				}
@@ -1246,8 +1246,8 @@ class MazeImport extends TaskSet
 
 			// If it doesn't exist, occurence is 1.  Otherwise, increment the occurence
 
-			var occurence = occurenceCount.exists(mazeKey) ? occurenceCount[mazeKey] + 1 : 1;
-			occurenceCount[mazeKey] = occurence;
+			var occurence = occurenceCount.exists(dbKey) ? occurenceCount[dbKey] + 1 : 1;
+			occurenceCount[dbKey] = occurence;
 
 			var d;
 			var sc:SchoolClass;
@@ -1259,9 +1259,9 @@ class MazeImport extends TaskSet
 
 			// Get SchoolClass from cache, or create and add to cache
 
-			if (schoolClasses.exists(mazeKey))
+			if (schoolClasses.exists(dbKey))
 			{
-				d = schoolClasses.get(mazeKey);
+				d = schoolClasses.get(dbKey);
 				d.row = row;
 				sc = d.sc;
 				ctMap = d.cts;
@@ -1272,7 +1272,7 @@ class MazeImport extends TaskSet
 				sc = new SchoolClass();
 				ctMap = new Map();
 				d = { sc: sc, scSaved: false, cts: ctMap, row: row };
-				schoolClasses.set(mazeKey, d);
+				schoolClasses.set(dbKey, d);
 				schoolClassAction = "Created";
 			}
 
@@ -1294,22 +1294,22 @@ class MazeImport extends TaskSet
 
 			// Grab the teacher
 
-			var teacher = allCurrentStaff.filter(function (sm) return sm.mazeKey == row.T1TEACH).first();
+			var teacher = allCurrentStaff.filter(function (sm) return sm.dbKey == row.T1TEACH).first();
 			if (teacher == null) 
 			{
 				// It is possible this is an empty class...
-				var rs = getAllStudentsInClass(mazeKey);
+				var rs = getAllStudentsInClass(dbKey);
 
 				// If the class has no students, skip this loop...
 				if (rs.length == 0) 
 				{
-					trace ('Skipping class $mazeKey ${row.FULLNAME} because it had no students');
-					schoolClasses.remove(mazeKey);
+					trace ('Skipping class $dbKey ${row.FULLNAME} because it had no students');
+					schoolClasses.remove(dbKey);
 					continue;
 				}
 				else
 				{
-					teacher = allCurrentStaff.filter(function (sm) return sm.mazeKey == "nt").first();
+					teacher = allCurrentStaff.filter(function (sm) return sm.dbKey == "nt").first();
 				}
 			}
 
@@ -1319,9 +1319,9 @@ class MazeImport extends TaskSet
 
 			if (d.scSaved == false)
 			{
-				var subject = allCurrentSubjects.filter(function (sub) return sub.mazeKey == row.SUBJ).first();
+				var subject = allCurrentSubjects.filter(function (sub) return sub.dbKey == row.SUBJ).first();
 
-				if (subject == null) throw 'Could not find subject ${row.SUBJ} for class ${row.SHORTNAME} ${row.FULLNAME} ${mazeKey}';
+				if (subject == null) throw 'Could not find subject ${row.SUBJ} for class ${row.SHORTNAME} ${row.FULLNAME} ${dbKey}';
 				
 				sc.shortName = sanitiseString(row.SHORTNAME);
 				sc.fullName = row.FULLNAME;
@@ -1336,7 +1336,7 @@ class MazeImport extends TaskSet
 				if (sc.yeargroup == null) 
 				{
 					// Load all students, check which yeargroups they are in...
-					var rs = getAllStudentsInClass(mazeKey);
+					var rs = getAllStudentsInClass(dbKey);
 					if (rs.length > 0)
 					{
 						var tagsFound = [];
@@ -1366,7 +1366,7 @@ class MazeImport extends TaskSet
 					}
 				}
 				sc.frequency = row.FREQ;
-				sc.mazeKey = mazeKey;
+				sc.dbKey = dbKey;
 				sc.subject = subject;
 				sc.save();
 				d.scSaved = true;
@@ -1423,7 +1423,7 @@ class MazeImport extends TaskSet
 				ct.schoolClass = sc;
 				ct.teacher = teacher;
 				ct.save();
-				trace ('  $classTimeAction CTime${sc.fullName}[${ct.occurence}]: $day, ${period.name}, ${ct.teacher.mazeKey}.');
+				trace ('  $classTimeAction CTime${sc.fullName}[${ct.occurence}]: $day, ${period.name}, ${ct.teacher.dbKey}.');
 			}
 		}
 
@@ -1438,7 +1438,7 @@ class MazeImport extends TaskSet
 				if ( !ctData.b ) {
 					// Not saved, go ahead and delete it!
 					var ct = ctData.a;
-					trace ('  Deleted CTime${sc.sc.fullName}[${ct.occurence}]: ${ct.day}, ${ct.period.name}, ${ct.teacher.mazeKey}.');
+					trace ('  Deleted CTime${sc.sc.fullName}[${ct.occurence}]: ${ct.day}, ${ct.period.name}, ${ct.teacher.dbKey}.');
 					ctData.a.delete();
 				}
 			}
@@ -1475,7 +1475,7 @@ class MazeImport extends TaskSet
 						}
 					}
 				}
-				else trace ('For classtime $ct (schoolclass: [${sc.sc.mazeKey}] ${sc.sc.fullName}, occurence ${ct.occurence}): period is null');
+				else trace ('For classtime $ct (schoolclass: [${sc.sc.dbKey}] ${sc.sc.fullName}, occurence ${ct.occurence}): period is null');
 			}
 		}
 	}
@@ -1489,17 +1489,17 @@ class MazeImport extends TaskSet
 		var total = 0;
 		for (c in allClasses)
 		{
-			if (c.mazeKey.startsWith("_rg") == false)
+			if (c.dbKey.startsWith("_rg") == false)
 			{
-				var rs = getAllStudentsInClass(c.mazeKey);
+				var rs = getAllStudentsInClass(c.dbKey);
 				var students = rs.map(function (row) {
-					return allStudents.filter(function (s) return s.mazeKey == row.STKEY).first();
+					return allStudents.filter(function (s) return s.dbKey == row.STKEY).first();
 				});
 				c.students.setList(students);
 				
 				var count = students.length;
 				total += count;
-				trace ('  Added $count students to class ${c.fullName} ${c.mazeKey}');
+				trace ('  Added $count students to class ${c.fullName} ${c.dbKey}');
 			}
 		}
 		trace ('There are $total student/class relationships');

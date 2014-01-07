@@ -1,7 +1,7 @@
-package app.coredata.tools;
-import app.coredata.model.Period;
-import app.coredata.model.ClassTime;
-import app.coredata.model.PrimaryOrHigh;
+package schooldata.tools;
+import schooldata.model.Period;
+import schooldata.model.ClassTime;
+import schooldata.model.PrimaryOrHigh;
 using tink.CoreApi;
 using Lambda;
 using Dates;

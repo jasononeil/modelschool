@@ -1,0 +1,16 @@
+{
+  "name": "modelschool",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["education","school","spod","orm","ufront","model"],
+  "description": "A collection of data models, tools and import scripts to that assist in building apps for education.",
+  "contributors": ["jason"],
+  "releasenote": "Initial release",
+  "version": "1.0.0-alpha.1",
+  "url": "https://bitbucket.org/jasononeil/modelschool/",
+  "dependencies": {
+    "tink_core": "",
+    "ufront-mvc": "",
+    "ufront-orm": ""
+  }
+}

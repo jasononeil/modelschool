@@ -1,8 +1,8 @@
-package app.coredata.model;
+package schooldata.model;
 
 import sys.db.Types;
 import ufront.db.Object;
-import app.coredata.model.*;
+import schooldata.model.*;
 
 class StudentProfile extends Object
 {

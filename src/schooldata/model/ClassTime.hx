@@ -1,10 +1,10 @@
-package app.coredata.model;
+package schooldata.model;
 
 import ufront.db.Object;
 import ufront.db.ManyToMany;
 import sys.db.Types;
 
-import app.coredata.model.*;
+import schooldata.model.*;
 using thx.util.CleverSort;
 using Dates;
 using Lambda;

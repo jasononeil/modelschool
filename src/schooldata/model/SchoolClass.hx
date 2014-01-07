@@ -1,10 +1,10 @@
-package app.coredata.model;
+package schooldata.model;
 
 import sys.db.Types;
 import ufront.db.Object;
 import ufront.db.ManyToMany;
 
-import app.coredata.model.*;
+import schooldata.model.*;
 using Lambda;
 
 class SchoolClass extends Object
@@ -14,7 +14,7 @@ class SchoolClass extends Object
 	public var yeargroup:Null<STinyInt>;
 	public var yeargroup2:Null<STinyInt>;
 	public var frequency:STinyInt;
-	public var mazeKey:String;
+	public var dbKey:String;
 	
 	public var subject:BelongsTo<Subject>;
 	public var classTimes:HasMany<ClassTime>;

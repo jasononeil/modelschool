@@ -1,4 +1,4 @@
-package app.coredata.model;
+package schooldata.model;
 using Lambda;
 
 enum PrimaryOrHigh {

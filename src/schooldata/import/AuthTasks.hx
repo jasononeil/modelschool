@@ -1,9 +1,9 @@
-package tasks;
+package schooldata.import;
 using StringTools;
 
 import ufront.auth.model.*;
-import app.coredata.model.*;
-import app.coredata.model.Person;
+import schooldata.model.*;
+import schooldata.model.Person;
 import AppPermissions;
 import ufront.tasks.TaskSet;
 import ufront.ufadmin.UFAdminPermissions;
@@ -86,7 +86,7 @@ class AuthTasks extends TaskSet
 			var s = new StaffMember();
 			s.person = p;
 			s.title = "";
-			s.mazeKey = "";
+			s.dbKey = "";
 			s.active = true;
 			s.save();
 

@@ -1,12 +1,12 @@
-package app.coredata.model;
+package schooldata.model;
 
 import ufront.db.Object;
 import sys.db.Types;
-import app.coredata.model.*;
+import schooldata.model.*;
 
 class Family extends Object
 {
-	public var mazeKey:SString<20>;
+	public var dbKey:SString<20>;
 
 	public var motherName:SString<60>;
 	public var motherMobile:SString<20>;
