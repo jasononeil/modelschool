@@ -1,10 +1,10 @@
-package schooldata.model;
+package modelschool.core.model;
 
 import ufront.db.Object;
 import ufront.db.ManyToMany;
 import sys.db.Types;
 
-import schooldata.model.*;
+import modelschool.core.model.*;
 using thx.util.CleverSort;
 using Dates;
 using Lambda;
@@ -12,7 +12,7 @@ using Lambda;
 class ClassTime extends Object
 {
 	public var day:STinyUInt;
-	public var occurence:STinyInt;
+	public var occurrence:STinyInt;
 	public var linkedToNextPeriod:Bool = false;
 	
 	public var teacher:BelongsTo<StaffMember>;

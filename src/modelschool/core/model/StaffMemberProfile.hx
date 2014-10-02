@@ -1,8 +1,8 @@
-package schooldata.model;
+package modelschool.core.model;
 
 import sys.db.Types;
 import ufront.db.Object;
-import schooldata.model.*;
+import modelschool.core.model.*;
 
 class StaffMemberProfile extends Object
 {

@@ -1,31 +1,48 @@
-package schooldata.model;
+package modelschool.core.model;
 
 import sys.db.Types;
 import ufront.db.Object;
 import ufront.db.ManyToMany;
+import modelschool.core.model.*;
 
-import schooldata.model.*;
 using Lambda;
 
 class SchoolClass extends Object
 {
-	public var shortName:SString<25>;
+	public var shortName:Null<SString<25>>;
 	public var fullName:SString<255>;
 	public var yeargroup:Null<STinyInt>;
 	public var yeargroup2:Null<STinyInt>;
 	public var frequency:STinyInt;
-	public var dbKey:String;
+	public var dbKey:String = "";
 	
-	public var subject:BelongsTo<Subject>;
+	/** 
+		The primary teacher responsible for this class.  
+		See also `teachers`, which shows teachers associated with various class time slots.
+		If this is null, use `teachers` to get a list of teachers from the class times.
+	**/
+	public var teacher:BelongsTo<StaffMember>;
+	
+	public var subject:Null<BelongsTo<Subject>>;
 	public var classTimes:HasMany<ClassTime>;
 	public var students:ManyToMany<SchoolClass, Student>;
-	
+
+	/** 
+		`teachers` is a property which retrieves not only the teacher listed in the `teacher` field, but also any listed as teachers of the various ClassTimes.  
+		This was if two teachers each take a couple of periods each, they can share the class.
+	**/
 	@:skip public var teachers(get,never):List<StaffMember>;
+
 	@:skip public var teacherAids(get,never):List<StaffMember>;
 	@:skip public var yeargroupStr(get,never):String;
 
+	override public function toString() {
+		return fullName;
+	}
+
 	function get_teachers() {
 		var teachers = new List();
+		teachers.push( teacher );
 		if ( classTimes!=null ) for ( ct in classTimes ) {
 			if ( !teachers.has(ct.teacher) ) teachers.add( ct.teacher );
 		}

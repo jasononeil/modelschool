@@ -1,9 +1,9 @@
-package schooldata.model;
+package modelschool.core.model;
 
 import sys.db.Types;
 import ufront.db.Object;
 
-import schooldata.model.*;
+import modelschool.core.model.*;
 import ufront.auth.model.User;
 
 class Person extends Object
@@ -15,6 +15,16 @@ class Person extends Object
 	public var gender:SEnum<Gender>;
 	public var birthday:Null<SDate>;
 	public var user:BelongsTo<User>;
+
+	@:skip public var preferredFirstName(get,never):String;
+
+	override public function toString() {
+		return '$preferredFirstName $surname';
+	}
+
+	function get_preferredFirstName():String {
+		return preferredName!=null ? preferredName : firstName;
+	}
 }
 
 enum Gender 

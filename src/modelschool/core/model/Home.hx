@@ -1,8 +1,8 @@
-package schooldata.model;
+package modelschool.core.model;
 
 import ufront.db.Object;
 import sys.db.Types;
-import schooldata.model.*;
+import modelschool.core.model.*;
 
 class Home extends Object
 {

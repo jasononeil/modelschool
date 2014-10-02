@@ -1,11 +1,10 @@
-package schooldata.model;
+package modelschool.core.model;
 
 import sys.db.Types;
 import ufront.db.Object;
-using ufront.util.TimeOfDayTools;
 using Lambda;
 
-import schooldata.model.*;
+import modelschool.core.model.*;
 
 class Period extends Object
 {
@@ -26,8 +25,8 @@ class Period extends Object
 	public var position:STinyInt;
 	public var number:Null<STinyInt>;
 	public var name:SString<15>;
-	public var startTime:TimeOfDay;
-	public var endTime:TimeOfDay;
+	public var startTime:SMediumUInt;
+	public var endTime:SMediumUInt;
 
 	@:skip 	public var shortName(get,null):String;
 	function get_shortName() {

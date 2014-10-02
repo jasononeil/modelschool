@@ -1,10 +1,10 @@
-package schooldata.model;
+package modelschool.core.model;
 
 import sys.db.Types;
 import ufront.db.Object;
 import ufront.db.ManyToMany;
 
-import schooldata.model.*;
+import modelschool.core.model.*;
 
 class RollGroup extends Object
 {
