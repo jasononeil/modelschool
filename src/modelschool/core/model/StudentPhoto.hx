@@ -7,7 +7,6 @@ import modelschool.core.model.*;
 
 class StudentPhoto extends Object
 {
-	public var photo:SBinary;
-	public var hash:SString<32>;
+	public var photo:Null<SBinary>;
 	public var student:BelongsTo<Student>;
 }

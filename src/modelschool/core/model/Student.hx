@@ -14,7 +14,7 @@ class Student extends Object
 	public var active:SBool;
 	
 	public var person:BelongsTo<Person>;
-	public var family:Null<BelongsTo<Family>>;
+	public var families:ManyToMany<Student,Family>;
 	public var rollGroup:Null<BelongsTo<RollGroup>>;
 	public var schoolHouse:Null<BelongsTo<SchoolHouse>>;
 	

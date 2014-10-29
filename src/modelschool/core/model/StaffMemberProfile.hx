@@ -16,7 +16,4 @@ class StaffMemberProfile extends Object
 
 	public var policeClearance:Bool;
 	public var policeClearanceDate:SNull<SDate>;
-
-	public var mobile:SString<15>;
-	public var email:SString<80>;
 }

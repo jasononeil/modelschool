@@ -19,7 +19,6 @@ class SchoolClass extends Object
 	/** 
 		The primary teacher responsible for this class.  
 		See also `teachers`, which shows teachers associated with various class time slots.
-		If this is null, use `teachers` to get a list of teachers from the class times.
 	**/
 	public var teacher:BelongsTo<StaffMember>;
 	
@@ -42,9 +41,9 @@ class SchoolClass extends Object
 
 	function get_teachers() {
 		var teachers = new List();
-		teachers.push( teacher );
+		if ( teacher!=null ) teachers.push( teacher );
 		if ( classTimes!=null ) for ( ct in classTimes ) {
-			if ( !teachers.has(ct.teacher) ) teachers.add( ct.teacher );
+			if ( ct.teacher!=null && !teachers.has(ct.teacher) ) teachers.add( ct.teacher );
 		}
 		return teachers;
 	}

@@ -12,7 +12,9 @@ class StaffMember extends Object
 	public var title:SString<20>;
 	public var dbKey:SString<4>;
 	public var active:SBool;
-	public var email:String;
+	
+	public var email:Null<String>;
+	public var contactDetails:SData<ContactDetails> = [];
 
 	public var person:BelongsTo<Person>;
 	@:relationKey(teacherID) public var classTimes:HasMany<ClassTime>;

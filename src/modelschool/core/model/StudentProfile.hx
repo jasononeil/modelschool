@@ -16,7 +16,8 @@ class StudentProfile extends Object
 	public var indigenousStatus:SString<100>;
 	public var languageAtHome:SString<30>;
 
-	public var dateOfEntry:SDate;
+	public var dateOfEntry:Null<SDate>;
+	public var dateOfExit:Null<SDate>;
 	public var yeargroupOfEntry:SString<10>;
 	public var idCardExpiry:Null<SDate>;
 	public var boarder:Bool;

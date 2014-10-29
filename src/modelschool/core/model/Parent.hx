@@ -11,12 +11,15 @@ class Parent extends Object
 {
 	public var title:Null<SString<20>>;
 	public var relationship:Null<SString<50>>;
-	public var dbKey:SString<4>;
+	public var dbKey:SString<20>;
 	public var active:SBool;
-	public var email:String;
+	
+	@:validate( _.length>3 && _.indexOf("@")>1 )
+	public var email:Null<SString<255>>;
+	public var contactDetails:SData<ContactDetails> = [];
 
 	public var person:BelongsTo<Person>;
-	public var family:Null<BelongsTo<Family>>;
+	public var families:ManyToMany<Parent,Family>;
 	
 	@:skip public var formalName(get,null):String;
 	@:skip public var fullName(get,null):String;
