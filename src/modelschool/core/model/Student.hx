@@ -23,12 +23,27 @@ class Student extends Object
 	@:skip public var user(get,null):User;
 	@:skip public var yeargroup(get,null):Int;
 	@:skip public var name(get,null):String;
+	@:skip public var parents(get,null):List<Parent>;
 
 	function get_yeargroup() return getYearFromTag(graduatingYear);
 	inline function get_user() return this.person.user;
 
 	function get_name() {
 		return person.toString();
+	}
+	
+	function get_parents():List<Parent> {
+		if ( parents==null ) {
+			parents = new List();
+			for ( family in families ) {
+				for ( parent in family.parents ) {
+					if ( parents.has(parent)==false ) {
+						parents.add( parent );
+					}
+				}
+			}
+		}
+		return parents;
 	}
 
 	override public function toString() {

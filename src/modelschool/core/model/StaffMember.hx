@@ -31,11 +31,11 @@ class StaffMember extends Object
 
 	function get_classes() {
 		var classes = new List();
-		if ( classTimes!=null ) for ( ct in classTimes ) {
-			if ( !Lambda.has(classes,ct.schoolClass) ) classes.add( ct.schoolClass );
-		}
 		if ( schoolClasses!=null ) for ( sc in schoolClasses ) {
 			classes.add( sc );
+		}
+		if ( classTimes!=null ) for ( ct in classTimes ) {
+			if ( !Lambda.has(classes,ct.schoolClass) ) classes.add( ct.schoolClass );
 		}
 		// Commented out for now as teacherAidClassTimes (a ManyToMany) sometimes has a null bList, and so throws an error.
 		// Plus, I'm not using it yet.

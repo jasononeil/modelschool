@@ -4,8 +4,8 @@ import sys.db.Types;
 import ufront.db.Object;
 import ufront.db.ManyToMany;
 import ufront.auth.model.User;
-
 import modelschool.core.model.*;
+using Lambda;
 
 class Parent extends Object
 {
@@ -16,7 +16,7 @@ class Parent extends Object
 	
 	@:validate( _.length>3 && _.indexOf("@")>1 )
 	public var email:Null<SString<255>>;
-	public var contactDetails:SData<ContactDetails> = [];
+	public var contactDetails:SData<ContactDetails>;
 
 	public var person:BelongsTo<Person>;
 	public var families:ManyToMany<Parent,Family>;
@@ -24,6 +24,12 @@ class Parent extends Object
 	@:skip public var formalName(get,null):String;
 	@:skip public var fullName(get,null):String;
 	@:skip public var user(get,null):User;
+	@:skip public var children(get,null):List<Student>;
+	
+	public function new() {
+		super();
+		this.contactDetails = [];
+	}
 
 	inline function get_formalName() {
 		return '$title ${person.surname}';
@@ -36,6 +42,20 @@ class Parent extends Object
 	function get_fullName() {
 		var t = (title!=null) ? '$title ' : "";
 		return '$t${person.firstName} ${person.surname}';
+	}
+	
+	function get_children():List<Student> {
+		if ( children==null ) {
+			children = new List();
+			for ( family in families ) {
+				for ( child in family.children ) {
+					if ( children.has(child)==false ) {
+						children.add( child );
+					}
+				}
+			}
+		}
+		return children;
 	}
 
 	override public function toString() {
