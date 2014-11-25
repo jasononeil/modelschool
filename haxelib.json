@@ -5,8 +5,8 @@
   "tags": ["education","school","spod","orm","ufront","model"],
   "description": "A collection of data models, tools and import scripts to that assist in building apps for education.",
   "contributors": ["jason"],
-  "releasenote": "Initial release",
-  "version": "1.0.0-alpha.1",
+  "releasenote": "Various changes. Moving towards a stable API",
+  "version": "1.0.0-beta.1",
   "url": "https://bitbucket.org/jasononeil/modelschool/",
   "dependencies": {
     "tink_core": "",
