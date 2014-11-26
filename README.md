@@ -1,7 +1,7 @@
 Model School
 ============
 
-This is key common files used in some educational apps, at this stage, mostly the apps made by Jason O'Neil: Sheridan School Management System, and ClassHomie.
+This is key common files used in some educational apps, at this stage, mostly the apps made by Jason O'Neil: Sheridan School Management System, and Today We Learned.
 
 License
 -------
