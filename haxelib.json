@@ -5,12 +5,15 @@
   "tags": ["education","school","spod","orm","ufront","model"],
   "description": "A collection of data models, tools and import scripts to that assist in building apps for education.",
   "contributors": ["jason"],
-  "releasenote": "Increased text size on StudentProfile",
-  "version": "1.0.0-beta.2",
+  "releasenote": "Switched to new thx.core.",
+  "version": "1.0.0-beta.3",
   "url": "https://bitbucket.org/jasononeil/modelschool/",
   "dependencies": {
     "tink_core": "",
     "ufront-mvc": "",
-    "ufront-orm": ""
+    "ufront-orm": "",
+    "cleversort": "",
+    "thx.culture": "",
+    "thx.format": ""
   }
 }

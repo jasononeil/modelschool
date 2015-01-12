@@ -3,10 +3,10 @@ package modelschool.core.model;
 import ufront.db.Object;
 import ufront.db.ManyToMany;
 import sys.db.Types;
-
+import thx.culture.Culture;
 import modelschool.core.model.*;
-using thx.util.CleverSort;
-using Dates;
+using CleverSort;
+using thx.format.Format;
 using Lambda;
 
 class ClassTime extends Object
@@ -25,7 +25,7 @@ class ClassTime extends Object
 
 	function get_dayName()
 	{
-		return day.weekDayNameFromNum();
+		return Culture.invariant.dateTime.nameDays[day];
 	}
 
 	public static function sortClassTimes(cts:Iterable<ClassTime>)
@@ -33,5 +33,10 @@ class ClassTime extends Object
 		var sorted = cts.array();
 		sorted.cleverSort( _.day, _.period.position );
 		return sorted;
+	}
+	
+	public override function toString()
+	{
+		return '$dayName, ${period.shortName}, $schoolClass';
 	}
 }
