@@ -25,7 +25,7 @@ class ClassTime extends Object
 
 	function get_dayName()
 	{
-		return Culture.invariant.dateTime.nameDays[day];
+		return (day!=null) ? Culture.invariant.dateTime.nameDays[day] : null;
 	}
 
 	public static function sortClassTimes(cts:Iterable<ClassTime>)
@@ -37,6 +37,6 @@ class ClassTime extends Object
 	
 	public override function toString()
 	{
-		return '$dayName, ${period.shortName}, $schoolClass';
+		return '$dayName, $period, $schoolClass';
 	}
 }
