@@ -15,8 +15,15 @@ class SchoolClass extends Object
 	public var yeargroup2:Null<STinyInt>;
 	public var frequency:STinyInt;
 	public var dbKey:String = "";
-	
-	/** 
+
+	/**
+		If a class is "abstract", it exists as a grouping of students, but does not represent a regular class that students attend.
+		Examples might include the whole school, a particular yeargroup, a sports team or a certain academic group.
+		This is useful for setting attendance for that group in bulk for a particular occasion (like a camp) or directing notices to that group etc.
+	**/
+	public var abstractClass:Bool = false;
+
+	/**
 		The primary teacher responsible for this class.  
 		See also `teachers`, which shows teachers associated with various class time slots.
 	**/

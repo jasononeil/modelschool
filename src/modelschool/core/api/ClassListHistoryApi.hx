@@ -67,7 +67,7 @@ class ClassListHistoryApi extends UFApi {
 		closeTimetableSetsOtherThan( name );
 		var timetableSet = getTimetableSet( name );
 		timetableSet.periods.clear();
-		var currentClasses = SchoolClass.manager.search( $frequency>0 );
+		var currentClasses = SchoolClass.manager.search( $frequency>0 || $abstractClass==true );
 		var i = 0;
 		var total = currentClasses.length;
 		ufTrace( 'Capturing timetables for $total classes' );
