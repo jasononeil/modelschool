@@ -3,6 +3,7 @@ package modelschool.core.api;
 import ufront.api.UFApi;
 import modelschool.core.model.*;
 import modelschool.core.model.ClassListHistory;
+import ufront.db.DatabaseID;
 
 class ClassListHistoryApi extends UFApi {
 	public function getAllTimetableSets():List<TimetableSet> {

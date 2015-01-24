@@ -53,9 +53,3 @@ typedef HistoricTimetable = {
 	periods:Array<Period>,
 	classes:Array<HistoricClassList>
 }
-
-abstract DatabaseID<T:ufront.db.Object>( Int ) from Int to Int {
-	inline function new(id:Int) this = id;
-	@:to public function toInt():Int return this;
-	@:from public static function fromObject<T:ufront.db.Object>( o:T ):DatabaseID<T> return new DatabaseID( o.id );
-}
