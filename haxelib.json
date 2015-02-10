@@ -5,8 +5,8 @@
   "tags": ["education","school","spod","orm","ufront","model"],
   "description": "A collection of data models, tools and import scripts to that assist in building apps for education.",
   "contributors": ["jason"],
-  "releasenote": "Add SchoolClass.abstractClass, move DatabaseID to ufront-orm.",
-  "version": "1.0.0-beta.5",
+  "releasenote": "Updates to assessment models to make them more useful / broad.",
+  "version": "1.0.0-beta.6",
   "url": "https://bitbucket.org/jasononeil/modelschool/",
   "dependencies": {
     "tink_core": "",
