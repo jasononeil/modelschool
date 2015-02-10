@@ -20,8 +20,8 @@ class Assessment extends Object {
 	@:validate( _>=0 && _<=100, "Weighting must be between 0 and 100" )
 	public var weighting:Float = 20;
 
-	public var startDate:SDate;
-	public var dueDate:SDate;
+	public var startDate:Null<SDate>;
+	public var dueDate:Null<SDate>;
 
 	public var results:HasMany<AssessmentResult>;
 

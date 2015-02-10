@@ -9,9 +9,10 @@ class AssessmentResult extends Object {
 
 	public var assessment:BelongsTo<Assessment>;
 	public var student:BelongsTo<Student>;
-	
+
+	public var feedback:Null<SText>;
 	public var acknowledgedByParent:Null<BelongsTo<Parent>>;
-	public var acknowledgedByDate:SDateTime;
+	public var acknowledgedByDate:Null<SDateTime>;
 
 	@:validate( _!=Math.NaN && _>=0 && _<=assessment.outOf, "Mark must be a number between 0 and "+assessment.outOf )
 	public var mark:Null<Float>;
@@ -24,6 +25,18 @@ class AssessmentResult extends Object {
 	**/
 	public function getNearestPercentage():Int {
 		return Math.round( mark / assessment.outOf * 100 );
+	}
+
+	/**
+		TODO: add another model for defining which grading scale we will use.
+	**/
+	public static function gradeForPercentage( percentage:Float ):String {
+		return
+			if ( percentage>=80 ) "A";
+			else if ( percentage>=65 ) "B";
+			else if ( percentage>=50 ) "C";
+			else if ( percentage>=20 ) "D";
+			else  "E";
 	}
 
 	/**
