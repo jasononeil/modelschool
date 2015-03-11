@@ -3,6 +3,7 @@ package modelschool.core.model;
 import sys.db.Types;
 import ufront.db.Object;
 import ufront.db.ManyToMany;
+import ufront.db.DatabaseID;
 import modelschool.core.model.*;
 import ufront.auth.model.User;
 using Lambda;
@@ -54,10 +55,10 @@ class Student extends Object
 	public static function getTagFromYear(yg:Int) return (yg!=null) ? Date.now().getFullYear() - yg + 12 : 1900; // TODO: use Serverdate as in Sheridan project.
 
 	#if server 
-		public static function fromUser( u:User ) {
+		public static function fromUser( u:DatabaseID<User> ) {
 			var s:Student = null;
 			if ( u!=null ) {
-				var p = Person.manager.select($userID==u.id);
+				var p = Person.manager.select($userID==u.toInt());
 				if ( p!=null ) {
 					s = Student.manager.select($personID==p.id);
 				}

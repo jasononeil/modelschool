@@ -3,6 +3,7 @@ package modelschool.core.model;
 import sys.db.Types;
 import ufront.db.Object;
 import ufront.db.ManyToMany;
+import ufront.db.DatabaseID;
 import ufront.auth.model.User;
 import modelschool.core.model.*;
 using Lambda;
@@ -63,10 +64,10 @@ class Parent extends Object
 	}
 
 	#if server 
-		public static function fromUser( u:User ) {
+		public static function fromUser( u:DatabaseID<User> ) {
 			var parent:Parent = null;
 			if ( u!=null ) {
-				var p = Person.manager.select($userID==u.id);
+				var p = Person.manager.select($userID==u.toInt());
 				if ( p!=null ) {
 					parent = Parent.manager.select($personID==p.id);
 				}
