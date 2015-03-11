@@ -48,8 +48,7 @@ class StaffMember extends Object
 	}
 
 	function get_teachingName() {
-		var initial = person.firstName.charAt( 0 );
-		return '$title $initial. ${person.surname}';
+		return '$title ${person.surname}';
 	}
 
 	function get_name() {
