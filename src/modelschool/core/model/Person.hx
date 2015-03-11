@@ -26,11 +26,3 @@ class Person extends Object
 		return preferredName!=null ? preferredName : firstName;
 	}
 }
-
-enum Gender 
-{
-	Male;
-	Female;
-	Other;
-	Unknown;
-}
