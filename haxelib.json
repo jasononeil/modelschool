@@ -5,8 +5,8 @@
   "tags": ["education","school","spod","orm","ufront","model"],
   "description": "A collection of data models, tools and import scripts to that assist in building apps for K-12 schools.",
   "contributors": ["jason"],
-  "releasenote": "Move Gender into separate file. Small improvements elsewhere.",
-  "version": "1.0.0-beta.7",
+  "releasenote": "Add SchoolClass.classNumber.",
+  "version": "1.0.0-beta.8",
   "url": "https://github.com/jasononeil/modelschool",
   "dependencies": {
     "tink_core": "",
