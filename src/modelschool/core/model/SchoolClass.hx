@@ -9,11 +9,19 @@ using Lambda;
 
 class SchoolClass extends Object
 {
+	/** A shortcode for the current class. **/
 	public var shortName:Null<SString<25>>;
+	/** A full, human readable name for the current class. **/
 	public var fullName:SString<255>;
+	/** The yeargroup of the current class (or lowest yeargroup if the class spans a range of yeargroups). **/
 	public var yeargroup:Null<STinyInt>;
+	/** The higher yeargroup, if the class spans a range of yeargroups. Null if there is only one yeargroup. **/
 	public var yeargroup2:Null<STinyInt>;
+	/** The number of times this class runs each week. **/
 	public var frequency:STinyInt;
+	/** The number of the class, if there are multiple classes in this subject. **/
+	public var classNumber:STinyInt;
+	/** The unique database key / ID for this class in an external database. Used when running automatic imports. **/
 	public var dbKey:String = "";
 
 	/**
@@ -24,17 +32,20 @@ class SchoolClass extends Object
 	public var abstractClass:Bool = false;
 
 	/**
-		The primary teacher responsible for this class.  
+		The primary teacher responsible for this class.
 		See also `teachers`, which shows teachers associated with various class time slots.
 	**/
 	public var teacher:BelongsTo<StaffMember>;
-	
+
+	/** The subject for this class. **/
 	public var subject:Null<BelongsTo<Subject>>;
+	/** The specific times this class runs during the week. **/
 	public var classTimes:HasMany<ClassTime>;
+	/** The students who are in this class. **/
 	public var students:ManyToMany<SchoolClass, Student>;
 
-	/** 
-		`teachers` is a property which retrieves not only the teacher listed in the `teacher` field, but also any listed as teachers of the various ClassTimes.  
+	/**
+		`teachers` is a property which retrieves not only the teacher listed in the `teacher` field, but also any listed as teachers of the various ClassTimes.
 		This was if two teachers each take a couple of periods each, they can share the class.
 	**/
 	@:skip public var teachers(get,never):List<StaffMember>;
@@ -70,14 +81,14 @@ class SchoolClass extends Object
 		var y1 = switch ( yeargroup ) {
 			case -1: "KG";
 			case 0: "PP";
-			default: 
+			default:
 				if (yeargroup==null) "NA"
 				else 'Yr $yeargroup';
 		}
 		return switch ( yeargroup2 ) {
 			case -1: '$y1 / KG';
 			case 0: '$y1 / PP';
-			default: 
+			default:
 				if ( yeargroup2==null) y1;
 				else if ( yeargroup>0 ) '$y1/$yeargroup2';
 				else '$y1 / Yr $yeargroup2';
