@@ -18,9 +18,9 @@ class SchoolClass extends Object
 	/** The higher yeargroup, if the class spans a range of yeargroups. Null if there is only one yeargroup. **/
 	public var yeargroup2:Null<STinyInt>;
 	/** The number of times this class runs each week. **/
-	public var frequency:STinyInt;
+	public var frequency:STinyInt = 0;
 	/** The number of the class, if there are multiple classes in this subject. **/
-	public var classNumber:STinyInt;
+	public var classNumber:STinyInt = 0;
 	/** The unique database key / ID for this class in an external database. Used when running automatic imports. **/
 	public var dbKey:String = "";
 
