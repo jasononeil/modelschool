@@ -27,7 +27,7 @@ class Parent extends Object
 	@:skip public var fullName(get,null):String;
 	@:skip public var user(get,null):User;
 	@:skip public var children(get,null):List<Student>;
-	@:skip public var phone(get,null):Null<String>;
+	@:skip public var phone(get,set):Null<String>;
 
 	public function new() {
 		super();
@@ -63,6 +63,13 @@ class Parent extends Object
 
 	function get_phone():Null<String> {
 		return (this.contactDetails!=null) ? ContactDetailTools.getFirstPhoneNumber( this.contactDetails ) : null;
+	}
+
+	function set_phone( phone:Null<String> ):Null<String> {
+		if ( this.contactDetails==null )
+			this.contactDetails = [];
+		ContactDetailTools.setFirstPhoneNumber( this.contactDetails, phone );
+		return phone;
 	}
 
 	override public function toString() {

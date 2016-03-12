@@ -55,4 +55,21 @@ class ContactDetailTools {
 		}
 		return null;
 	}
+
+	/**
+		Set the first phone number found.
+	**/
+	public static function setFirstPhoneNumber( details:ContactDetails, newPhoneNum:String ):Void {
+		var i = 0;
+		for ( detail in details ) {
+			switch detail {
+				case Phone(_,name):
+					details[i] = Phone(newPhoneNum,name);
+					return;
+				case _:
+			}
+			i++;
+		}
+		details.push( Phone(newPhoneNum,null) );
+	}
 }

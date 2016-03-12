@@ -6,13 +6,14 @@ import ufront.db.ManyToMany;
 import ufront.db.DatabaseID;
 import ufront.auth.model.User;
 import modelschool.core.model.*;
+import modelschool.core.model.ContactDetails;
 
 class StaffMember extends Object
 {
 	public var title:SString<20>;
 	public var dbKey:SString<4>;
 	public var active:SBool;
-	
+
 	public var email:Null<String>;
 	public var contactDetails:SData<ContactDetails> = [];
 
@@ -28,6 +29,7 @@ class StaffMember extends Object
 	@:skip public var fullName(get,null):String;
 	@:skip public var name(get,null):String;
 	@:skip public var user(get,null):User;
+	@:skip public var phone(get,set):Null<String>;
 
 	function get_classes() {
 		var classes = new List();
@@ -39,11 +41,11 @@ class StaffMember extends Object
 		}
 		// Commented out for now as teacherAidClassTimes (a ManyToMany) sometimes has a null bList, and so throws an error.
 		// Plus, I'm not using it yet.
-		// if ( teacherAidClassTimes!=null ) 
-		// 	for ( ct in teacherAidClassTimes ) 
-		// 		if ( !Lambda.has(classes,ct.schoolClass) ) 
+		// if ( teacherAidClassTimes!=null )
+		// 	for ( ct in teacherAidClassTimes )
+		// 		if ( !Lambda.has(classes,ct.schoolClass) )
 		// 			classes.add( ct.schoolClass );
-			
+
 		return classes;
 	}
 
@@ -56,9 +58,9 @@ class StaffMember extends Object
 	}
 
 	function get_fullName() {
-		if ( person.middleNames=="" || person.middleNames==null ) 
+		if ( person.middleNames=="" || person.middleNames==null )
 			return '$title ${person.firstName} ${person.surname}';
-		else 
+		else
 			return '$title ${person.firstName} ${person.middleNames} ${person.surname}';
 	}
 
@@ -66,11 +68,22 @@ class StaffMember extends Object
 		return person.user;
 	}
 
+	function get_phone():Null<String> {
+		return (this.contactDetails!=null) ? ContactDetailTools.getFirstPhoneNumber( this.contactDetails ) : null;
+	}
+
+	function set_phone( phone:Null<String> ):Null<String> {
+		if ( this.contactDetails==null )
+			this.contactDetails = [];
+		ContactDetailTools.setFirstPhoneNumber( this.contactDetails, phone );
+		return phone;
+	}
+
 	override public function toString() {
 		return person.toString();
 	}
 
-	#if server 
+	#if server
 		public static function fromUser( u:DatabaseID<User> ) {
 			var s:StaffMember = null;
 			if ( u!=null ) {
@@ -81,5 +94,5 @@ class StaffMember extends Object
 			}
 			return s;
 		}
-	#end 
+	#end
 }
