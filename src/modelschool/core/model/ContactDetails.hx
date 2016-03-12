@@ -41,4 +41,18 @@ class ContactDetailTools {
 				emails.push( getDetail(detail) );
 		return emails;
 	}
+
+	/**
+		Return the first phone number found.
+	**/
+	public static function getFirstPhoneNumber( details:ContactDetails ):Null<String> {
+		for ( detail in details ) {
+			switch detail {
+				case Phone(num,_):
+					return num;
+				case _:
+			}
+		}
+		return null;
+	}
 }
