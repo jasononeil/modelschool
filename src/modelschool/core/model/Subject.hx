@@ -12,6 +12,7 @@ class Subject extends Object
 	public var yeargroup2:Null<STinyInt>;
 	public var dbKey:String;
 
+	public var school:BelongsTo<School>;
 	public var department:Null<BelongsTo<Department>>;
 	public var contactTeacher:Null<BelongsTo<StaffMember>>;
 	public var classes:HasMany<SchoolClass>;

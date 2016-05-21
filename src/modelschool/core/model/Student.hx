@@ -13,14 +13,15 @@ class Student extends Object
 	public var graduatingYear:SSmallUInt;
 	public var dbKey:SString<10>;
 	public var active:SBool;
-	
+
 	public var person:BelongsTo<Person>;
 	public var families:ManyToMany<Student,Family>;
 	public var rollGroup:Null<BelongsTo<RollGroup>>;
 	public var schoolHouse:Null<BelongsTo<SchoolHouse>>;
-	
+
 	public var classes:ManyToMany<Student, SchoolClass>;
-	
+	public var schools:ManyToMany<Student, School>;
+
 	@:skip public var user(get,null):User;
 	@:skip public var yeargroup(get,null):Int;
 	@:skip public var name(get,null):String;
@@ -32,7 +33,7 @@ class Student extends Object
 	function get_name() {
 		return person.toString();
 	}
-	
+
 	function get_parents():List<Parent> {
 		if ( parents==null ) {
 			parents = new List();
@@ -54,7 +55,7 @@ class Student extends Object
 	public static function getYearFromTag(tag:Int) return (tag!=null) ? Date.now().getFullYear() - tag + 12 : 99; // TODO: use Serverdate as in Sheridan project.
 	public static function getTagFromYear(yg:Int) return (yg!=null) ? Date.now().getFullYear() - yg + 12 : 1900; // TODO: use Serverdate as in Sheridan project.
 
-	#if server 
+	#if server
 		public static function fromUser( u:DatabaseID<User> ) {
 			var s:Student = null;
 			if ( u!=null ) {
@@ -65,6 +66,6 @@ class Student extends Object
 			}
 			return s;
 		}
-	#end 
+	#end
 
 }

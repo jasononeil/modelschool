@@ -32,6 +32,11 @@ class SchoolClass extends Object
 	public var abstractClass:Bool = false;
 
 	/**
+		The school that this class belongs to.
+	**/
+	public var school:BelongsTo<School>;
+
+	/**
 		The primary teacher responsible for this class.
 		See also `teachers`, which shows teachers associated with various class time slots.
 	**/

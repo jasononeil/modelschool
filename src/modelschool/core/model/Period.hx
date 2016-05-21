@@ -28,14 +28,15 @@ class Period extends Object
 	public var startTime:SMediumUInt;
 	public var endTime:SMediumUInt;
 	public var active:Bool;
+	public var school:BelongsTo<School>;
 
 	@:skip 	public var shortName(get,null):String;
 	function get_shortName() {
 		if (name.length<=2) return name;
-		#if ACBC 
+		#if ACBC
 			// return (number != null && number > 0 && ) ? 'P$number' : name.charAt(0).toUpperCase();
 			return (name.charAt(0) == "P") ? 'P$number' : name.charAt(0).toUpperCase();
-		#else 
+		#else
 			return (number != null && number > 0) ? 'P$number' : name.charAt(0).toUpperCase();
 		#end
 	}

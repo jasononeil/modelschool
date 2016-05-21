@@ -12,9 +12,10 @@ class RollGroup extends Object
 	public var description:SString<255>;
 	public var yeargroup:STinyInt;
 	public var yeargroup2:Null<STinyInt>;
-	
+
 	public var teacher:Null<BelongsTo<StaffMember>>;
 	public var students:HasMany<Student>;
+	public var school:BelongsTo<School>;
 
 	@:skip public var yeargroupStr(get,never):String;
 	function get_yeargroupStr()

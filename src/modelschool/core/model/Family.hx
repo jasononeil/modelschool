@@ -20,7 +20,7 @@ class Family extends Object
 
 	public var mailTitle:Null<SString<100>>;
 	public var mailAddress:Null<BelongsTo<Home>>;
-	
+
 	public var billingTitle:Null<Null<SString<100>>>;
 	public var billingAddress:Null<BelongsTo<Home>>;
 }

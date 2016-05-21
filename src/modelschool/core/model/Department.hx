@@ -13,4 +13,5 @@ class Department extends Object
 	public var hod:BelongsTo<StaffMember>;
 	public var subjects:HasMany<Subject>;
 	public var staff:ManyToMany<Department, StaffMember>;
+	public var school:BelongsTo<School>;
 }

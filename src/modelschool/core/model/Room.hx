@@ -9,4 +9,5 @@ class Room extends Object
 {
 	public var name:SString<10>;
 	public var description:Null<SString<50>>;
+	public var school:BelongsTo<School>;
 }

@@ -23,6 +23,7 @@ class StaffMember extends Object
 	public var teacherAidClassTimes:ManyToMany<StaffMember,ClassTime>;
 
 	public var departments:ManyToMany<StaffMember, Department>;
+	public var schools:ManyToMany<StaffMember, School>;
 
 	@:skip public var classes(get,null):List<SchoolClass>;
 	@:skip public var teachingName(get,null):String;

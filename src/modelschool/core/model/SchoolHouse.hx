@@ -11,4 +11,5 @@ class SchoolHouse extends Object
 	public var shortName:SString<5>;
 	public var name:SString<50>;
 	public var students:HasMany<Student>;
+	public var school:BelongsTo<School>;
 }

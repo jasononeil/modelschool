@@ -26,6 +26,7 @@ class TimetableSet extends Object {
 	public var endDate:SDate;
 	public var current:Bool;
 	public var periods:ManyToMany<TimetableSet,Period>;
+	public var school:BelongsTo<School>;
 }
 
 class StudentEnrolmentHistory extends Object {
