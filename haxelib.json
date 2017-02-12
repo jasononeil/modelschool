@@ -2,18 +2,16 @@
   "name": "modelschool",
   "license": "MIT",
   "classPath": "src",
-  "tags": ["education","school","spod","orm","ufront","model"],
+  "tags": ["education","school","edtech","orm","ufront","model"],
   "description": "A collection of data models, tools and import scripts to that assist in building apps for K-12 schools.",
   "contributors": ["jason"],
   "releasenote": "Add SchoolClass.classNumber.",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0",
   "url": "https://github.com/jasononeil/modelschool",
   "dependencies": {
     "tink_core": "",
     "ufront-mvc": "",
     "ufront-orm": "",
     "cleversort": "",
-    "thx.culture": "",
-    "thx.format": ""
   }
 }
