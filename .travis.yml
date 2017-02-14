@@ -62,7 +62,7 @@ install:
   #  fi
   #- haxelib install hxjava
   #- haxelib install hxcs
-  - haxelib install api.hxml
+  - haxelib --always install api.hxml
   - haxelib list
 
 script:
