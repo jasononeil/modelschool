@@ -62,9 +62,7 @@ install:
   #  fi
   #- haxelib install hxjava
   #- haxelib install hxcs
-  - haxelib --always install cleversort
-  - haxelib --always install ufront-orm
-  - haxelib --always install ufront-easyauth
+  - yes | haxelib install api.hxml
   - haxelib list
 
 script:
