@@ -3,6 +3,6 @@ package modelschool.core.model;
 enum Gender {
 	Male;
 	Female;
-	Other;
+	Other(?other:String);
 	Unknown;
 }
