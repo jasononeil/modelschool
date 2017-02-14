@@ -24,7 +24,6 @@ class ClassTime extends Object
 	function get_dayName()
 	{
 		return switch day {
-			case null: null;
 			case 0: "Sunday";
 			case 1: "Monday";
 			case 2: "Tuesday";
@@ -32,6 +31,7 @@ class ClassTime extends Object
 			case 4: "Thursday";
 			case 5: "Friday";
 			case 6: "Saturday";
+			case _: null;
 		}
 	}
 
