@@ -27,44 +27,46 @@ addons:
   # http://docs.travis-ci.com/user/apt/#Adding-APT-Packages
   apt:
     packages:
-      # C++ (for rebuilding hxcpp)
-      - gcc-multilib
-      - g++-multilib
-      # Python
-      - python3
-      # PHP
-      - php5-cli
-      # C#
-      - mono-devel
-      - mono-mcs
+      ## C++ (for rebuilding hxcpp)
+      #- gcc-multilib
+      #- g++-multilib
+      ## Python
+      #- python3
+      ## PHP
+      #- php5-cli
+      ## C#
+      #- mono-devel
+      #- mono-mcs
 
 install:
   # os-specific config
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      export DISPLAY=:99.0;
-      export AUDIODEV=null;
-    elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-      brew uninstall --force brew-cask;
-      brew update;
-      brew install mono;
-      brew install phantomjs;
-      brew install python3;
-    fi
-  # Install haxelibs
-  - if [ "${TRAVIS_HAXE_VERSION}" = "development" ]; then
-      haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git;
-      pushd $(haxelib path hxcpp | head -1);
-        pushd tools/hxcpp; haxe compile.hxml; popd;
-        pushd project; neko build.n; popd;
-      popd;
-    else
-      haxelib install hxcpp;
-    fi
-  - haxelib install hxjava
-  - haxelib install hxcs
+  #- if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+  #    export DISPLAY=:99.0;
+  #    export AUDIODEV=null;
+  #  elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+  #    brew uninstall --force brew-cask;
+  #    brew update;
+  #    brew install mono;
+  #    brew install phantomjs;
+  #    brew install python3;
+  #  fi
+  ## Install haxelibs
+  #- if [ "${TRAVIS_HAXE_VERSION}" = "development" ]; then
+  #    haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git;
+  #    pushd $(haxelib path hxcpp | head -1);
+  #      pushd tools/hxcpp; haxe compile.hxml; popd;
+  #      pushd project; neko build.n; popd;
+  #    popd;
+  #  else
+  #    haxelib install hxcpp;
+  #  fi
+  #- haxelib install hxjava
+  #- haxelib install hxcs
+  - haxelib install api.hxml
   - haxelib list
 
 script:
+  - haxelib install api.hxml
   - haxe api.hxml
   #- haxe build-neko.hxml         && neko bin/HelloWorld.n
   #- haxe build-js.hxml           && node bin/HelloWorld.js
