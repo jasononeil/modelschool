@@ -32,13 +32,9 @@ class Period extends Object
 
 	@:skip 	public var shortName(get,null):String;
 	function get_shortName() {
-		if (name.length<=2) return name;
-		#if ACBC
-			// return (number != null && number > 0 && ) ? 'P$number' : name.charAt(0).toUpperCase();
-			return (name.charAt(0) == "P") ? 'P$number' : name.charAt(0).toUpperCase();
-		#else
-			return (number != null && number > 0) ? 'P$number' : name.charAt(0).toUpperCase();
-		#end
+		if (name.length<=2)
+			return name;
+		return (number != null && number > 0) ? 'P$number' : name.charAt(0).toUpperCase();
 	}
 
 	override function toString() {
