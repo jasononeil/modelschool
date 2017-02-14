@@ -1,0 +1,6 @@
+-lib ufront-orm
+-lib ufront-easyauth
+-lib cleversort
+-cp src
+-neko bin/modelschool.n
+modelschool.CoreApi
