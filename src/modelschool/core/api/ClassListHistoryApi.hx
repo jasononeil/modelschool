@@ -9,7 +9,7 @@ class ClassListHistoryApi extends UFApi {
 	public function getAllTimetableSets():List<TimetableSet> {
 		return TimetableSet.manager.search(true,{ orderBy: -endDate });
 	}
-	
+
 	public function getClassesForTeacher( teacherID:DatabaseID<StaffMember>, setID:DatabaseID<TimetableSet> ):HistoricTimetable {
 		var set = TimetableSet.manager.get( setID.toInt() );
 		var teacherEnrolments = TeacherEnrolmentHistory.manager.search( $teacherID==teacherID.toInt() );
@@ -29,7 +29,7 @@ class ClassListHistoryApi extends UFApi {
 			periods: Lambda.array( set.periods )
 		};
 	}
-	
+
 	public function getClassesForStudent( studentID:DatabaseID<Student>, setID:DatabaseID<TimetableSet> ):HistoricTimetable {
 		var set = TimetableSet.manager.get( setID.toInt() );
 		var studentEnrolments = StudentEnrolmentHistory.manager.search( $studentID==studentID.toInt() );
@@ -49,7 +49,7 @@ class ClassListHistoryApi extends UFApi {
 			periods: Lambda.array( set.periods )
 		};
 	}
-	
+
 	function generateClassTimes( clh:ClassListHistory, periods:Iterable<Period> ):List<ClassTime> {
 		var cts = new List(),
 			i = 0;
@@ -63,7 +63,7 @@ class ClassListHistoryApi extends UFApi {
 		}
 		return cts;
 	}
-	
+
 	public function captureTimetableSet( name:String ):Void {
 		closeTimetableSetsOtherThan( name );
 		var timetableSet = getTimetableSet( name );
@@ -78,7 +78,7 @@ class ClassListHistoryApi extends UFApi {
 				snapshotIndividualClass( sc, timetableSet );
 		}
 	}
-	
+
 	function closeTimetableSetsOtherThan( name:String ):Void {
 		for ( ts in TimetableSet.manager.all() ) if ( ts.name!=name ) {
 			ts.current = false;
@@ -114,11 +114,11 @@ class ClassListHistoryApi extends UFApi {
 		}
 		classHistory.classTimes = classTimes;
 		classHistory.save();
-		
+
 		snapshotTeacherEnrolments( classHistory );
 		snapshotStudentEnrolments( classHistory );
 	}
-	
+
 	function snapshotTeacherEnrolments( classHistory:ClassListHistory ):Void {
 		var teacherHistories = classHistory.teachers;
 		for ( teacher in classHistory.schoolClass.teachers ) {

@@ -2,6 +2,7 @@ package modelschool;
 
 class CoreApi {}
 
+typedef ClassListHistoryApi = modelschool.core.api.ClassListHistoryApi;
 typedef ClassListHistory = modelschool.core.model.ClassListHistory.ClassListHistory;
 typedef TimetableSet = modelschool.core.model.ClassListHistory.TimetableSet;
 typedef StudentEnrolmentHistory = modelschool.core.model.ClassListHistory.StudentEnrolmentHistory;
