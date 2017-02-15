@@ -12,7 +12,7 @@ class Person extends Object
 	public var middleNames:Null<SString<30>>;
 	public var preferredName:Null<SString<30>>;
 	public var surname:SString<30>;
-	public var gender:SEnum<Gender>;
+	public var gender:SData<Gender>;
 	public var birthday:Null<SDate>;
 	public var user:BelongsTo<User>;
 
