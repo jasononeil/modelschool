@@ -1,0 +1,32 @@
+mysql_data:
+  image: busybox:latest
+  volumes:
+    - mysql_data:/var/lib/mysql
+
+# Database volume
+db:
+  image: mysql:5.7
+  environment:
+    MYSQL_USERNAME: root
+    MYSQL_ROOT_PASSWORD: root
+  ports:
+    - 3306:3306
+  volumes_from:
+    - mysql_data
+
+# PhpMyAdmin
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  links:
+    - db
+  ports:
+    - 8181:80
+  environment:
+    PMA_HOST: db
+    PMA_USER: root
+    PMA_PASSWORD: root
+    MYSQL_USERNAME: root
+    MYSQL_PASSWORD: root
+    PHP_UPLOAD_MAX_FILESIZE: 1000M
+
+
