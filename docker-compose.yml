@@ -1,3 +1,12 @@
+php:
+  build: bin/.
+  volumes:
+    - ./bin/:/var/www/html
+  ports:
+    - 80:80
+  links:
+    - db
+
 mysql_data:
   image: busybox:latest
   volumes:
