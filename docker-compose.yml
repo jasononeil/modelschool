@@ -10,7 +10,7 @@ php:
 mysql_data:
   image: busybox:latest
   volumes:
-    - mysql_data:/var/lib/mysql
+    - modelschool_mysql_data:/var/lib/mysql
 
 # Database volume
 db:
