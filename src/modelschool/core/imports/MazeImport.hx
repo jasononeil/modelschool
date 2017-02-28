@@ -24,219 +24,219 @@ class MazeImport
 
 	public function doImportstudents()
 	{
-	// 	var cnx = connectToMazeTransferDB();
+		var cnx = connectToMazeTransferDB();
 
-	// 	trace ("Getting list of all current students...");
-	// 	var sql = "SELECT ST.*,
-	// 			KGN.DESCRIPTION AS NATION_STR,
-	// 			KIS.DESCRIPTION AS ABORIGINAL_STR,
-	// 			KGL.DESCRIPTION AS LANG_STR,
-	// 			KGS.SCHOOL_NAME AS PREVIOUS_STR,
-	// 			KGS.LOCAL_AREA AS PREVIOUS_AREA_STR,
-	// 			KGT.DESCRIPTION AS BIRTH_COUNTRY_STR
-	// 		FROM `ST`
-	// 			LEFT OUTER JOIN KGN ON KGN.NATION = ST.NATION
-	// 			LEFT OUTER JOIN KIS ON KIS.KISKEY = ST.ABORIGINAL
-	// 			LEFT OUTER JOIN KGL ON KGL.KGLKEY = ST.LANG
-	// 			LEFT OUTER JOIN KGS ON KGS.SCHOOL = ST.PREVIOUS
-	// 			LEFT OUTER JOIN KGT ON KGT.KGTKEY = ST.BIRTH_COUNTRY
-	// 		WHERE `STATUS` = 'FULL'";
+		trace ("Getting list of all current students...");
+		var sql = "SELECT ST.*,
+				KGN.DESCRIPTION AS NATION_STR,
+				KIS.DESCRIPTION AS ABORIGINAL_STR,
+				KGL.DESCRIPTION AS LANG_STR,
+				KGS.SCHOOL_NAME AS PREVIOUS_STR,
+				KGS.LOCAL_AREA AS PREVIOUS_AREA_STR,
+				KGT.DESCRIPTION AS BIRTH_COUNTRY_STR
+			FROM `ST`
+				LEFT OUTER JOIN KGN ON KGN.NATION = ST.NATION
+				LEFT OUTER JOIN KIS ON KIS.KISKEY = ST.ABORIGINAL
+				LEFT OUTER JOIN KGL ON KGL.KGLKEY = ST.LANG
+				LEFT OUTER JOIN KGS ON KGS.SCHOOL = ST.PREVIOUS
+				LEFT OUTER JOIN KGT ON KGT.KGTKEY = ST.BIRTH_COUNTRY
+			WHERE `STATUS` = 'FULL'";
 
-	// 	var rs = cnx.request(sql).results();
-	// 	var count = Lambda.count(rs);
-	// 	trace ('  Found $count students');
+		var rs = cnx.request(sql).results();
+		var count = Lambda.count(rs);
+		trace ('  Found $count students');
 
-	// 	var cnx = connectToModelSchoolDB();
+		var cnx = connectToModelSchoolDB();
 
-	// 	var allCurrentStudents = Student.manager.all();
-	// 	var allCurrentPeople = Person.manager.all();
-	// 	var allCurrentUsers = User.manager.all();
-	// 	var allCurrentStudentPhotos = StudentPhoto.manager.all();
-	// 	var allCurrentProfiles = StudentProfile.manager.all();
-	// 	var allCurrentRollGroups = RollGroup.manager.all();
-	// 	var allCurrentSchoolHouses = SchoolHouse.manager.all();
-	// 	var allCurrentFamilies = Family.manager.all();
+		var allCurrentStudents = Student.manager.all();
+		var allCurrentPeople = Person.manager.all();
+		var allCurrentUsers = User.manager.all();
+		var allCurrentStudentPhotos = StudentPhoto.manager.all();
+		var allCurrentProfiles = StudentProfile.manager.all();
+		var allCurrentRollGroups = RollGroup.manager.all();
+		var allCurrentSchoolHouses = SchoolHouse.manager.all();
+		var allCurrentFamilies = Family.manager.all();
 
-	// 	var studentGroup = Group.manager.select($name == "students");
-	// 	var usersGroup = Group.manager.select($name == "users");
+		var studentGroup = Group.manager.select($name == "students");
+		var usersGroup = Group.manager.select($name == "users");
 
-	// 	var dbKeysNotFound = allCurrentStudents.map( function(s) return s.dbKey );
+		var dbKeysNotFound = allCurrentStudents.map( function(s) return s.dbKey );
 
-	// 	var i = 0;
-	// 	for (row in rs)
-	// 	{
-	// 		i++;
-	// 		var s:Student;
-	// 		var p:Person;
-	// 		var u:User;
-	// 		var sPhoto:StudentPhoto;
-	// 		var sProfile:StudentProfile;
+		var i = 0;
+		for (row in rs)
+		{
+			i++;
+			var s:Student;
+			var p:Person;
+			var u:User;
+			var sPhoto:StudentPhoto;
+			var sProfile:StudentProfile;
 
-	// 		// Check if the rows already exist
-	// 		var dbKey:String = cast row.STKEY;
+			// Check if the rows already exist
+			var dbKey:String = cast row.STKEY;
 
-	// 		dbKeysNotFound.remove( dbKey );
+			dbKeysNotFound.remove( dbKey );
 
-	// 		var action = "";
-	// 		s = allCurrentStudents.filter(function (s) { return s.dbKey == dbKey; }).first();
-	// 		if (s != null)
-	// 		{
-	// 			p = allCurrentPeople.filter(function (p) { return p.id == s.personID; }).first();
-	// 			u = allCurrentUsers.filter(function (u) { return u.id == p.userID; }).first();
-	// 			sPhoto = allCurrentStudentPhotos.filter(function (sp) {return sp.studentID == s.id; }).first();
-	// 			sProfile = allCurrentProfiles.filter(function (sp) return sp.studentID == s.id).first();
-	// 			action = "Updated";
-	// 		}
-	// 		else action = "Created";
+			var action = "";
+			s = allCurrentStudents.filter(function (s) { return s.dbKey == dbKey; }).first();
+			if (s != null)
+			{
+				p = allCurrentPeople.filter(function (p) { return p.id == s.personID; }).first();
+				u = allCurrentUsers.filter(function (u) { return u.id == p.userID; }).first();
+				sPhoto = allCurrentStudentPhotos.filter(function (sp) {return sp.studentID == s.id; }).first();
+				sProfile = allCurrentProfiles.filter(function (sp) return sp.studentID == s.id).first();
+				action = "Updated";
+			}
+			else action = "Created";
 
-	// 		// don't use the constructor for User because we don't want to generate the password hash now
-	// 		if (u == null) u = Type.createEmptyInstance(User);
-	// 		if (s == null) s = new Student();
-	// 		if (p == null) p = new Person();
-	// 		if (sProfile == null) sProfile = new StudentProfile();
-	// 		if (sPhoto == null) sPhoto = new StudentPhoto();
+			// don't use the constructor for User because we don't want to generate the password hash now
+			if (u == null) u = Type.createEmptyInstance(User);
+			if (s == null) s = new Student();
+			if (p == null) p = new Person();
+			if (sProfile == null) sProfile = new StudentProfile();
+			if (sPhoto == null) sPhoto = new StudentPhoto();
 
-	// 		// Tag / graduating year
-	// 		var tagString = sanitiseString( row.TAG );
-	// 		tagString = ~/[^0-9]/g.replace( tagString, "" );
-	// 		var graduatingYear:Int = Std.parseInt( tagString );
+			// Tag / graduating year
+			var tagString = sanitiseString( row.TAG );
+			tagString = ~/[^0-9]/g.replace( tagString, "" );
+			var graduatingYear:Int = Std.parseInt( tagString );
 
-	// 		// User;
-	// 		var first = sanitiseString(row.FIRST_NAME).toLowerCase();
-	// 		var surname = sanitiseString(row.SURNAME).toLowerCase();
-	// 		var username = '$first$surname$graduatingYear';
-	// 		username = username.replace(' ', '');
-	// 		username = username.replace('\'', '');
-	// 		username = username.replace('-', '');
-	// 		if (u.username != username || u.password == null || u.salt == null)
-	// 		{
-	// 			u.username = username;
-	// 			if (u.password == null)
-	// 			{
-	// 				u.forcePasswordChange = true;
-	// 				u.password = "";
-	// 			}
-	// 			if (u.salt == null) u.salt = "";
-	// 			u.save();
-	// 		}
-	// 		u.groups.add(studentGroup);
-	// 		u.groups.add(usersGroup);
+			// User;
+			var first = sanitiseString(row.FIRST_NAME).toLowerCase();
+			var surname = sanitiseString(row.SURNAME).toLowerCase();
+			var username = '$first$surname$graduatingYear';
+			username = username.replace(' ', '');
+			username = username.replace('\'', '');
+			username = username.replace('-', '');
+			if (u.username != username || u.password == null || u.salt == null)
+			{
+				u.username = username;
+				if (u.password == null)
+				{
+					u.forcePasswordChange = true;
+					u.password = "";
+				}
+				if (u.salt == null) u.salt = "";
+				u.save();
+			}
+			u.groups.add(studentGroup);
+			u.groups.add(usersGroup);
 
-	// 		// Person;
-	// 		p.firstName = sanitiseString(row.FIRST_NAME);
-	// 		p.surname = sanitiseString(row.SURNAME);
-	// 		p.middleNames = sanitiseString(row.SECOND_NAME);
-	// 		p.preferredName = (row.PREF_NAME == row.FIRST_NAME) ? "" : sanitiseString(row.PREF_NAME);
-	// 		p.gender = (row.GENDER == "M") ? Gender.Male : Gender.Female;
-	// 		p.birthday = row.BIRTHDATE;
-	// 		p.user = u;
-	// 		p.save();
+			// Person;
+			p.firstName = sanitiseString(row.FIRST_NAME);
+			p.surname = sanitiseString(row.SURNAME);
+			p.middleNames = sanitiseString(row.SECOND_NAME);
+			p.preferredName = (row.PREF_NAME == row.FIRST_NAME) ? "" : sanitiseString(row.PREF_NAME);
+			p.gender = (row.GENDER == "M") ? Gender.Male : Gender.Female;
+			p.birthday = row.BIRTHDATE;
+			p.user = u;
+			p.save();
 
-	// 		// Student;
-	// 		var rollGroup = allCurrentRollGroups.filter(function (rg) return rg.name == row.ROLL_GROUP).first();
-	// 		var family = allCurrentFamilies.filter(function (fam) return fam.dbKey == row.FAMILY).first();
-	// 		var schoolHouse = allCurrentSchoolHouses.filter(function (sh) return sh.shortName == row.HOUSE).first();
-	// 		if (s.graduatingYear != graduatingYear
-	// 			|| s.dbKey != row.STKEY
-	// 			|| s.personID != p.id
-	// 			|| s.rollGroupID != rollGroup.id
-	// 			|| s.schoolHouseID != schoolHouse.id
-	// 			|| s.familyID != family.id
-	// 			|| s.active != true
-	// 			)
-	// 		{
-	// 			s.graduatingYear = graduatingYear;
-	// 			s.dbKey = row.STKEY;
-	// 			s.active = true;
-	// 			s.person = p;
+			// Student;
+			var rollGroup = allCurrentRollGroups.filter(function (rg) return rg.name == row.ROLL_GROUP).first();
+			var family = allCurrentFamilies.filter(function (fam) return fam.dbKey == row.FAMILY).first();
+			var schoolHouse = allCurrentSchoolHouses.filter(function (sh) return sh.shortName == row.HOUSE).first();
+			if (s.graduatingYear != graduatingYear
+				|| s.dbKey != row.STKEY
+				|| s.personID != p.id
+				|| s.rollGroupID != rollGroup.id
+				|| s.schoolHouseID != schoolHouse.id
+				|| s.familyID != family.id
+				|| s.active != true
+				)
+			{
+				s.graduatingYear = graduatingYear;
+				s.dbKey = row.STKEY;
+				s.active = true;
+				s.person = p;
 
-	// 			if (rollGroup != null)
-	// 			{
-	// 				s.rollGroupID = rollGroup.id;
-	// 			}
-	// 			else trace ("Roll group not found: " + row.ROLL_GROUP);
+				if (rollGroup != null)
+				{
+					s.rollGroupID = rollGroup.id;
+				}
+				else trace ("Roll group not found: " + row.ROLL_GROUP);
 
-	// 			if (schoolHouse != null)
-	// 			{
-	// 				s.schoolHouseID = schoolHouse.id;
-	// 			}
-	// 			else trace ("School house not found: " + row.HOUSE);
+				if (schoolHouse != null)
+				{
+					s.schoolHouseID = schoolHouse.id;
+				}
+				else trace ("School house not found: " + row.HOUSE);
 
-	// 			if (family != null)
-	// 			{
-	// 				s.familyID = family.id;
-	// 			}
-	// 			else trace ("Family not found: " + row.FAMILY);
+				if (family != null)
+				{
+					s.familyID = family.id;
+				}
+				else trace ("Family not found: " + row.FAMILY);
 
-	// 			s.save();
-	// 		}
+				s.save();
+			}
 
-	// 		// StudentPhoto;
-	// 		sPhoto.photo = row.STUDENT_PIC;
-	// 		if (sPhoto.photo != null)
-	// 		{
-	// 			var mazePhotoMap = haxe.crypto.Md5.encode(sPhoto.photo.toHex());
-	// 			if (mazePhotoMap != sPhoto.hash)
-	// 			{
-	// 				sPhoto.student = s;
-	// 				sPhoto.hash = mazePhotoMap;
-	// 				sPhoto.save();
-	// 			}
-	// 		}
+			// StudentPhoto;
+			sPhoto.photo = row.STUDENT_PIC;
+			if (sPhoto.photo != null)
+			{
+				var mazePhotoMap = haxe.crypto.Md5.encode(sPhoto.photo.toHex());
+				if (mazePhotoMap != sPhoto.hash)
+				{
+					sPhoto.student = s;
+					sPhoto.hash = mazePhotoMap;
+					sPhoto.save();
+				}
+			}
 
-	// 		// StudentProfile;
-	// 		sProfile.placeOfBirth = sanitiseString(row.BIRTHPLACE);
-	// 		sProfile.countryOfBirth = sanitiseString(row.BIRTH_COUNTRY_STR); // Foreign Key KGT.KGTKEY , KGT.DESCRIPTION
-	// 		sProfile.residentStatus = switch (sanitiseString(row.RES_STATUS)) {
-	// 			case "C": "Citizen";
-	// 			case "R": "Resident";
-	// 			case "O": "Overseas";
-	// 			default: "";
-	// 		};
-	// 		sProfile.nationality = (row.NATION_STR != null) ? sanitiseString(row.NATION_STR) : sanitiseString(row.NATION);
-	// 		sProfile.indigenousStatus = sanitiseString(row.ABORIGINAL_STR); // Foreign key - KIS.KISKEY, KIS.DESCRIPTION
-	// 		sProfile.languageAtHome = sanitiseString(row.LANG_STR); // Foreign key KGL.KGLKEY - KGL.DESCRIPTION
-	// 		sProfile.dateOfEntry = row.ENTRY;
-	// 		sProfile.yeargroupOfEntry = sanitiseString(row.ENTRY_GRADE);
-	// 		sProfile.idCardExpiry = row.EXPIRY_DATE; // Need to verify if this is correct
-	// 		sProfile.boarder = (row.BOARDER != null && row.BOARDER == "Y");
-	// 		sProfile.examNumber = (row.EXAM != null) ? row.EXAM : null;
-	// 		sProfile.previousSchool = "";
-	// 		if (row.PREVIOUS_STR != null)
-	// 		{
-	// 			sProfile.previousSchool = sanitiseString(row.PREVIOUS_STR);
-	// 			if (row.PREVIOUS_AREA_STR != null)
-	// 			{
-	// 				sProfile.previousSchool += ' (${row.PREVIOUS_AREA_STR})';
-	// 			}
-	// 		}
-	// 		else if (row.PREVIOUS != null)
-	// 		{
-	// 			sProfile.previousSchool = sanitiseString(row.PREVIOUS);
-	// 		}
-	// 		sProfile.doctor = sanitiseString(row.DOCTOR);
-	// 		sProfile.emergencyContacts = extractContactsFromStrings([row.EMERGENCY, row.EMERG_CONTACT01, row.EMERG_CONTACT02]);
-	// 		sProfile.medicalAlert = (row.MEDICAL_ALERT != null && row.MEDICAL_ALERT == "Y");
-	// 		sProfile.medicalCondition1 = sanitiseString(row.MED_CONDA);
-	// 		sProfile.medicalCondition2 = sanitiseString(row.MED_CONDB);
-	// 		sProfile.disability = (row.DISABILITY != null && row.DISABILITY == "Y");
-	// 		sProfile.medicalNotes = sanitiseString(row.MEDICAL);
-	// 		sProfile.accessAlert = (row.ACCESS_ALERT != null && row.ACCESS_ALERT == "Y");
-	// 		sProfile.accessType = sanitiseString(row.ACCESS_TYPE);
-	// 		sProfile.accessNotes = sanitiseString(row.ACCESS);
-	// 		sProfile.studentID = s.id;
-	// 		sProfile.save();
+			// StudentProfile;
+			sProfile.placeOfBirth = sanitiseString(row.BIRTHPLACE);
+			sProfile.countryOfBirth = sanitiseString(row.BIRTH_COUNTRY_STR); // Foreign Key KGT.KGTKEY , KGT.DESCRIPTION
+			sProfile.residentStatus = switch (sanitiseString(row.RES_STATUS)) {
+				case "C": "Citizen";
+				case "R": "Resident";
+				case "O": "Overseas";
+				default: "";
+			};
+			sProfile.nationality = (row.NATION_STR != null) ? sanitiseString(row.NATION_STR) : sanitiseString(row.NATION);
+			sProfile.indigenousStatus = sanitiseString(row.ABORIGINAL_STR); // Foreign key - KIS.KISKEY, KIS.DESCRIPTION
+			sProfile.languageAtHome = sanitiseString(row.LANG_STR); // Foreign key KGL.KGLKEY - KGL.DESCRIPTION
+			sProfile.dateOfEntry = row.ENTRY;
+			sProfile.yeargroupOfEntry = sanitiseString(row.ENTRY_GRADE);
+			sProfile.idCardExpiry = row.EXPIRY_DATE; // Need to verify if this is correct
+			sProfile.boarder = (row.BOARDER != null && row.BOARDER == "Y");
+			sProfile.examNumber = (row.EXAM != null) ? row.EXAM : null;
+			sProfile.previousSchool = "";
+			if (row.PREVIOUS_STR != null)
+			{
+				sProfile.previousSchool = sanitiseString(row.PREVIOUS_STR);
+				if (row.PREVIOUS_AREA_STR != null)
+				{
+					sProfile.previousSchool += ' (${row.PREVIOUS_AREA_STR})';
+				}
+			}
+			else if (row.PREVIOUS != null)
+			{
+				sProfile.previousSchool = sanitiseString(row.PREVIOUS);
+			}
+			sProfile.doctor = sanitiseString(row.DOCTOR);
+			sProfile.emergencyContacts = extractContactsFromStrings([row.EMERGENCY, row.EMERG_CONTACT01, row.EMERG_CONTACT02]);
+			sProfile.medicalAlert = (row.MEDICAL_ALERT != null && row.MEDICAL_ALERT == "Y");
+			sProfile.medicalCondition1 = sanitiseString(row.MED_CONDA);
+			sProfile.medicalCondition2 = sanitiseString(row.MED_CONDB);
+			sProfile.disability = (row.DISABILITY != null && row.DISABILITY == "Y");
+			sProfile.medicalNotes = sanitiseString(row.MEDICAL);
+			sProfile.accessAlert = (row.ACCESS_ALERT != null && row.ACCESS_ALERT == "Y");
+			sProfile.accessType = sanitiseString(row.ACCESS_TYPE);
+			sProfile.accessNotes = sanitiseString(row.ACCESS);
+			sProfile.studentID = s.id;
+			sProfile.save();
 
-	// 		trace ('$action ${p.firstName} ${p.surname} ${u.username} ${s.dbKey} ($i/$count)');
-	// 	}
+			trace ('$action ${p.firstName} ${p.surname} ${u.username} ${s.dbKey} ($i/$count)');
+		}
 
-	// 	for ( dbKey in dbKeysNotFound ) {
-	// 		var s = allCurrentStudents.filter(function (s) { return s.dbKey == dbKey; }).first();
-	// 		s.classes.clear();
-	// 		s.active = false;
-	// 		s.save();
-	// 	}
-	// }
+		for ( dbKey in dbKeysNotFound ) {
+			var s = allCurrentStudents.filter(function (s) { return s.dbKey == dbKey; }).first();
+			s.classes.clear();
+			s.active = false;
+			s.save();
+		}
+	}
 
 	function extractContactsFromStrings(inArray:Array<String>)
 	{
@@ -1555,12 +1555,8 @@ class MazeImport
 			Permission.manager.delete(true);
 			User.manager.delete(true);
 			ClassTime.manager.delete(true);
-			CurriculumNote.manager.delete(true);
-			DayAttendanceSummary.manager.delete(true);
 			Department.manager.delete(true);
 			Family.manager.delete(true);
-			OutOfClassRecord.manager.delete(true);
-			PastoralCareNote.manager.delete(true);
 			Person.manager.delete(true);
 			Period.manager.delete(true);
 			RollGroup.manager.delete(true);
