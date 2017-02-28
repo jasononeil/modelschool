@@ -2,15 +2,17 @@ package modelschool.core.imports;
 import modelschool.core.model.*;
 import ufront.auth.model.*;
 import modelschool.core.model.Gender;
-import haxe.ds.StringMap;
 import haxe.Utf8;
 import sys.FileSystem;
+import sys.db.Connection;
 using tink.CoreApi;
 using StringTools;
 using Lambda;
 
 class MazeImport
 {
+	var mazeCnx:Connection;
+	var modelSchoolCnx:Connection;
 	var importConfig:{
 		features: {
 			primaryTimetables:Bool
@@ -18,8 +20,10 @@ class MazeImport
 		usernameCorrections:Map<String,String>
 	};
 
-	public function new(importConfig) {
+	public function new(importConfig, mazeCnx, modelSchoolCnx) {
 		this.importConfig = importConfig;
+		this.mazeCnx = mazeCnx;
+		this.modelSchoolCnx = modelSchoolCnx;
 	}
 
 	public function doImportstudents()
@@ -1597,23 +1601,20 @@ class MazeImport
 			ORDER BY SU.SUKEY ASC, TTTG.CLASS ASC, ST.STKEY ASC';
 		if (debug) trace (sql);
 		var rs = cnx.request(sql).results();
-		cnx.close();
 		sys.db.Manager.cnx = oldCnx;
 		return rs;
 	}
 
 	function connectToMazeTransferDB()
 	{
-		var cnx = sys.db.Mysql.connect(null);
-		sys.db.Manager.cnx = cnx;
-		return cnx;
+		sys.db.Manager.cnx = this.mazeCnx;
+		return this.mazeCnx;
 	}
 
 	function connectToModelSchoolDB()
 	{
-		var cnx = sys.db.Mysql.connect(null);
-		sys.db.Manager.cnx = cnx;
-		return cnx;
+		sys.db.Manager.cnx = this.modelSchoolCnx;
+		return this.modelSchoolCnx;
 	}
 
 	function getUserIfExists(userToSave:User)
