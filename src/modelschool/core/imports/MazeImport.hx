@@ -463,9 +463,10 @@ class MazeImport
 		var homeCount = homeRows.count();
 		trace ('  Found $homeCount homes');
 
-		var cnx = connectToModelSchoolDB();
+		connectToModelSchoolDB();
 
 		var allCurrentFamilies = Family.manager.all();
+		var allCurrentParents = Parent.manager.all();
 		var allCurrentHomes = Home.manager.all();
 
 		var i = 0;
@@ -508,48 +509,73 @@ class MazeImport
 			var row:Dynamic = r;
 			i++;
 			var action:String;
-			var f:Family = allCurrentFamilies.filter(function (fam) return fam.dbKey == row.DFKEY).first();
-			if (f == null)
+			var family:Family = allCurrentFamilies.filter(function (fam) return fam.dbKey == row.DFKEY).first();
+			if (family == null)
 			{
 				action = "Created";
-				f = new Family();
+				family = new Family();
 			}
 			else action = "Updated";
 
-			var familySurname = sanitiseString(row.SURNAME);
-			var motherFirstName = sanitiseString(row.MNAME);
-			var motherSurname = sanitiseString(row.MSURNAME);
-			var fatherFirstName = sanitiseString(row.FNAME);
-			var fatherSurname = sanitiseString(row.FSURNAME);
+			// TODO: consider if the family should have a general surname.
+			// (In addition to each individual having one).
+			// sanitiseString(row.SURNAME);
 
-			var motherName = (motherSurname != "") ? '$motherFirstName $motherSurname' : '$motherFirstName $familySurname';
-			var fatherName = (fatherSurname != "") ? '$fatherFirstName $fatherSurname' : '$fatherFirstName $familySurname';
+			family.dbKey = row.DFKEY;
+			var motherEmail = sanitiseString(row.M_EMAIL);
+			var mother = getOrCreateParent(allCurrentParents, family.dbKey + '_M', motherEmail);
+			mother.person.firstName = sanitiseString(row.MNAME);
+			mother.person.surname = sanitiseString(row.MSURNAME);
+			mother.email = motherEmail;
+			mother.phone = sanitiseString(row.MMOBILE);
+			mother.person.save();
+			mother.save();
+			var fatherEmail = sanitiseString(row.F_EMAIL);
+			var father = getOrCreateParent(allCurrentParents, family.dbKey + '_F', fatherEmail);
+			father.person.firstName = sanitiseString(row.FNAME);
+			father.person.surname = sanitiseString(row.FSURNAME);
+			father.email = sanitiseString(row.F_EMAIL);
+			father.phone = sanitiseString(row.FMOBILE);
+			father.person.save();
+			father.save();
 
-			f.dbKey = row.DFKEY;
-			f.motherName = motherName;
-			f.motherMobile = sanitiseString(row.MMOBILE);
-			f.motherWorkPhone = sanitiseString(row.MBUS_PHONE);
-			f.motherEmail = sanitiseString(row.M_EMAIL);
-			f.fatherName = fatherName;
-			f.fatherMobile = sanitiseString(row.FMOBILE);
-			f.fatherWorkPhone = sanitiseString(row.FBUS_PHONE);
-			f.fatherEmail = sanitiseString(row.F_EMAIL);
+			// TODO: support work phone numbers.
+			// sanitiseString(row.MBUS_PHONE);
+			// sanitiseString(row.FBUS_PHONE);
 
-			f.homeTitle = sanitiseString(row.HOMETITLE);
-			f.mailTitle = sanitiseString(row.MAILTITLE);
-			f.billingTitle = sanitiseString(row.BILLINGTITLE);
+			family.homeTitle = sanitiseString(row.HOMETITLE);
+			family.mailTitle = sanitiseString(row.MAILTITLE);
+			family.billingTitle = sanitiseString(row.BILLINGTITLE);
 
 			function getHome( dbKey:String ) {
 				return allCurrentHomes.filter( function (h) return h.dbKey==dbKey ).first();
 			}
 
-			f.homeAddress = getHome( row.HOMEKEY );
-			f.mailAddress = getHome( row.MAILKEY );
-			f.billingAddress = getHome( row.BILLINGKEY );
+			family.homeAddress = getHome( row.HOMEKEY );
+			family.mailAddress = getHome( row.MAILKEY );
+			family.billingAddress = getHome( row.BILLINGKEY );
 
-			f.save();
-			trace ('$action Family ${f.dbKey} ${f.motherName} ${f.fatherName} ($i/$familyCount)');
+			family.save();
+			trace ('$action Family ${family.dbKey} ${mother} ${father} ($i/$familyCount)');
 		}
+	}
+
+	function getOrCreateParent(allCurrentParents, dbKey, username) {
+		var parent = allCurrentParents.filter(function (p) return p.dbKey == dbKey).first();
+		if (parent == null) {
+			var user = new User(username);
+			user.save();
+
+			var person = new Person();
+			person.user = user;
+			person.save();
+
+			parent = new Parent();
+			parent.dbKey = dbKey;
+			parent.person = person;
+			parent.save();
+		}
+		return parent;
 	}
 
 	public function doImportrollgroups()
