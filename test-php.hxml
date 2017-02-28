@@ -1,0 +1,10 @@
+-lib ufront-orm
+-lib ufront-easyauth
+-lib cleversort
+-lib record-macros
+-D server
+-D php7
+-cp src
+-php bin/
+--php-front index.php
+-main Test
