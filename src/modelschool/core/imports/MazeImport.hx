@@ -17,6 +17,19 @@ class MazeImport
 		features: {
 			primaryTimetables:Bool
 		},
+		schoolInfo: {
+			shortName:String,
+			domain:String
+		},
+		schoolSetup: {
+			yeargroups: {
+				primary:Array<Int>,
+				secondary:Array<Int>
+			},
+			homeroom: {
+				periodNumbers:Array<Int>
+			}
+		},
 		usernameCorrections:Map<String,String>
 	};
 
@@ -145,10 +158,7 @@ class MazeImport
 				|| s.personID != p.id
 				|| s.rollGroupID != rollGroup.id
 				|| s.schoolHouseID != schoolHouse.id
-				|| s.familyID != family.id
-				|| s.active != true
-				)
-			{
+				|| s.active != true) {
 				s.graduatingYear = graduatingYear;
 				s.dbKey = row.STKEY;
 				s.active = true;
@@ -166,9 +176,8 @@ class MazeImport
 				}
 				else trace ("School house not found: " + row.HOUSE);
 
-				if (family != null)
-				{
-					s.familyID = family.id;
+				if (family != null) {
+					s.families.setList([family]);
 				}
 				else trace ("Family not found: " + row.FAMILY);
 
@@ -176,16 +185,11 @@ class MazeImport
 			}
 
 			// StudentPhoto;
-			sPhoto.photo = row.STUDENT_PIC;
-			if (sPhoto.photo != null)
+			if (sPhoto.photo != row.STUDENT_PIC)
 			{
-				var mazePhotoMap = haxe.crypto.Md5.encode(sPhoto.photo.toHex());
-				if (mazePhotoMap != sPhoto.hash)
-				{
-					sPhoto.student = s;
-					sPhoto.hash = mazePhotoMap;
-					sPhoto.save();
-				}
+				sPhoto.photo = row.STUDENT_PIC;
+				sPhoto.student = s;
+				sPhoto.save();
 			}
 
 			// StudentProfile;
@@ -282,7 +286,7 @@ class MazeImport
 		var count = Lambda.count(rs);
 		trace ('  Found $count staff');
 
-		var cnx = connectToModelSchoolDB();
+		connectToModelSchoolDB();
 
 		var allCurrentStaff = StaffMember.manager.all();
 		var allCurrentPeople = Person.manager.all();
@@ -295,13 +299,7 @@ class MazeImport
 		var nonTeachingStaffGroup = Group.manager.select($name == "nonTeachingStaff");
 
 		var testPassword = User.generatePasswordHash("test", "test");
-		var domain = switch (AppConfig.appShortName) {
-			case "QBC": "qbcol.com.au";
-			case "GBC": "geelongbc.org";
-			case "ACBC": "acbc.wa.edu.au";
-			case "ABC": "alkimosbc.wa.edu.au";
-			default: "example.org";
-		};
+		var domain = importConfig.schoolInfo.domain;
 
 
 		var i = 0;
@@ -396,6 +394,8 @@ class MazeImport
 				s.person = p;
 				s.title = sanitiseString(row.TITLE);
 				s.dbKey = dbKey;
+				s.phone = sanitiseString(row.MOBILE);
+				s.email = sanitiseString(row.SF_EMAIL);
 				s.save();
 			}
 
@@ -406,8 +406,6 @@ class MazeImport
 			sProfile.wwccExpiry = row.WWW_EXPIRY_DATE; // Date
 			sProfile.policeClearance = (row.POLICE_CLEARANCE == "Y");
 			sProfile.policeClearanceDate = row.CLEARANCE_DATE; // date
-			sProfile.mobile = sanitiseString(row.MOBILE);
-			sProfile.email = sanitiseString(row.SF_EMAIL);
 			sProfile.staffMember = s;
 			sProfile.save();
 
@@ -691,7 +689,7 @@ class MazeImport
 		var count = rs.count();
 		trace ('  Found $count School Houses');
 
-		var cnx = connectToModelSchoolDB();
+		connectToModelSchoolDB();
 
 		var allCurrentHouses = SchoolHouse.manager.all();
 
@@ -725,7 +723,7 @@ class MazeImport
 		var count = rs.count();
 		trace ('  Found $count subjects');
 
-		var cnx = connectToModelSchoolDB();
+		connectToModelSchoolDB();
 
 		var allCurrentSubjects = Subject.manager.all();
 		var allCurrentStaff = StaffMember.manager.all();
@@ -773,8 +771,8 @@ class MazeImport
 				}
 			}
 
-			row.CURR_OFFERED; // Not sure if this is relevant
-			row.SEMESTER; // Seems to be 0,1,2,3 ... not sure what they mean
+			// row.CURR_OFFERED; // Not sure if this is relevant
+			// row.SEMESTER; // Seems to be 0,1,2,3 ... not sure what they mean
 
 			s.save();
 			trace ('$action ${s.name} ${s.yeargroup} ${s.dbKey} ($i/$count)');
@@ -930,7 +928,7 @@ class MazeImport
 
 		for (rg in rollGroups)
 		{
-			var isPrimarySchool = AppConfig.primaryYears().has(rg.yeargroup);
+			var isPrimarySchool = this.importConfig.schoolSetup.yeargroups.primary.has(rg.yeargroup);
 			var dbKey = "_rg" + rg.name;
 			rg.yeargroup = (rg.yeargroup == null) ? 1 : rg.yeargroup;
 			trace ('Working on Rollgroup: $dbKey (Yr ${rg.yeargroup})');
@@ -987,7 +985,7 @@ class MazeImport
 				// Set up the class times
 				if ( isPrimarySchool && importConfig.features.primaryTimetables==false ) {
 					// Add class times for every period of the day
-					var occurence = 1;
+					var occurrence = 1;
 					for (day in 0...7)
 					{
 						if (day == 0 || day == 6) continue;
@@ -996,10 +994,10 @@ class MazeImport
 						for (period in periods)
 						{
 							trace ('    and period: ${period.number}');
-							var classTime = allCurrentClassTimes.filter(function (ct) return ct.schoolClassID == sc.id && ct.occurence == occurence).first();
+							var classTime = allCurrentClassTimes.filter(function (ct) return ct.schoolClassID == sc.id && ct.occurrence == occurrence).first();
 							if (classTime == null) classTime = new ClassTime();
 							classTime.day = day;
-							classTime.occurence = occurence;
+							classTime.occurrence = occurrence;
 							classTime.linkedToNextPeriod = (period.number < 7);
 							if (room != null) classTime.roomID = room.id;
 							classTime.schoolClassID = sc.id;
@@ -1007,14 +1005,14 @@ class MazeImport
 							classTime.teacherID = rg.teacherID;
 							classTime.save();
 
-							occurence++;
+							occurrence++;
 						}
 					}
 
 				}
 				else {
 					// Add a class time for form period only...
-					var formPeriodNums = AppConfig.formPeriodNums();
+					var formPeriodNums = importConfig.schoolSetup.homeroom.periodNumbers;
 					var formPeriods = [];
 					for ( formPeriodNum in formPeriodNums ) {
 
@@ -1033,7 +1031,7 @@ class MazeImport
 					ClassTime.manager.delete($schoolClassID == sc.id);
 
 					// Add class times for each form period on each day
-					var occurence = 1;
+					var occurrence = 1;
 					for (day in 0...7)
 					{
 						if (day == 0 || day == 6) continue;
@@ -1042,14 +1040,14 @@ class MazeImport
 							var classTime = new ClassTime();
 							trace ('  Creating class time for: $day');
 							classTime.day = day;
-							classTime.occurence = occurence;
+							classTime.occurrence = occurrence;
 							classTime.linkedToNextPeriod = false;
 							classTime.roomID = room.id;
 							classTime.schoolClassID = sc.id;
 							classTime.periodID = formPeriod.id;
 							classTime.teacherID = rg.teacherID;
 							classTime.save();
-							occurence++;
+							occurrence++;
 						}
 					}
 				}
@@ -1068,7 +1066,7 @@ class MazeImport
 	{
 		var usersAndPasswords:Map<String, String> = new Map();
 		var cwd = Sys.getCwd();
-		var csvFileName = '${cwd}import/Users_${AppConfig.appShortName}.csv';
+		var csvFileName = '${cwd}import/Users_${importConfig.schoolInfo.shortName}.csv';
 
 
 		if (FileSystem.exists(csvFileName))
@@ -1100,12 +1098,10 @@ class MazeImport
 
 			var dbUsers = User.manager.all();
 			var allStudents = Student.manager.all();
-			var allPeople = Person.manager.all();
 			var allStudentProfiles = StudentProfile.manager.all();
 
 			for (dbUser in dbUsers)
 			{
-				var isStudent = (dbUser.username.indexOf("20") > -1);
 				if ( !usersAndPasswords.exists(dbUser.username) )
 				{
 					trace ('Maze User `${dbUser.username}` was not in the password data');
@@ -1134,9 +1130,9 @@ class MazeImport
 			}
 			for (csvUser in usersAndPasswords.keys())
 			{
-				// var matchedUsers = dbUsers.filter(function (u) {
-				// 	return u.username == csvUser;
-				// });
+				var matchedUsers = dbUsers.filter(function (u) {
+					return u.username == csvUser;
+				});
 				if (matchedUsers.length == 0)
 				{
 					trace ('CSV User `${csvUser}` was not found in the Maze data');
@@ -1189,7 +1185,7 @@ class MazeImport
 			var classTimesMap = new Map();
 			for (ct in classTimes)
 			{
-				classTimesMap.set(ct.occurence, new MPair(ct,false));
+				classTimesMap.set(ct.occurrence, new MPair(ct,false));
 			}
 			schoolClasses.set(sc.dbKey, { sc: sc, scSaved: false, cts: classTimesMap, row: null });
 		}
@@ -1205,7 +1201,7 @@ class MazeImport
 
 		// Go through the Maze data, create or update the rows.
 
-		var occurenceCount:Map<String, Int> = new Map();
+		var occurrenceCount:Map<String, Int> = new Map();
 		for (row in rs)
 		{
 
@@ -1214,7 +1210,7 @@ class MazeImport
 			// Skip any form classes...
 
 			var thisPeriodPos:Int = row.QROW;
-			for (p in AppConfig.formPeriodNums()) {
+			for (p in importConfig.schoolSetup.homeroom.periodNumbers) {
 				if (p == thisPeriodPos) {
 					trace ('Skipping form class ... ${row.FULLNAME}');
 					if ( schoolClasses.exists(dbKey) ) {
@@ -1234,10 +1230,10 @@ class MazeImport
 				}
 			}
 
-			// If it doesn't exist, occurence is 1.  Otherwise, increment the occurence
+			// If it doesn't exist, occurrence is 1.  Otherwise, increment the occurrence
 
-			var occurence = occurenceCount.exists(dbKey) ? occurenceCount[dbKey] + 1 : 1;
-			occurenceCount[dbKey] = occurence;
+			var occurrence = occurrenceCount.exists(dbKey) ? occurrenceCount[dbKey] + 1 : 1;
+			occurrenceCount[dbKey] = occurrence;
 
 			var d;
 			var sc:SchoolClass;
@@ -1269,16 +1265,16 @@ class MazeImport
 			// Get ClassTime from cache, or create and add to cache
 			// Mark the flag in CTMap so we know the ClassTime is still in use, and we shouldn't delete it
 
-			if (ctMap.exists(occurence))
+			if (ctMap.exists(occurrence))
 			{
-				ct = ctMap[occurence].a;
-				ctMap[occurence].b = true;
+				ct = ctMap[occurrence].a;
+				ctMap[occurrence].b = true;
 				classTimeAction = "Updated";
 			}
 			if (ct == null)
 			{
 				ct = new ClassTime();
-				ctMap.set(occurence, new MPair(ct,true));
+				ctMap.set(occurrence, new MPair(ct,true));
 				classTimeAction = "Created";
 			}
 
@@ -1387,14 +1383,7 @@ class MazeImport
 			// (If primary school doesn't use Maze timetables, we skip it here and fill them up in the rollgroupimport)
 			//
 
-			var isSecondarySchool =
-				#if ABC
-					// so many of ABC's are 0 that I need to import them...
-					AppConfig.secondaryYears().has(sc.yeargroup) || sc.yeargroup==0
-				#else
-					AppConfig.secondaryYears().has(sc.yeargroup)
-				#end
-			;
+			var isSecondarySchool = importConfig.schoolSetup.yeargroups.secondary.has(sc.yeargroup);
 
 			if ( importConfig.features.primaryTimetables || isSecondarySchool )
 			{
@@ -1402,18 +1391,18 @@ class MazeImport
 				var day = row.QCOL;
 				// Check if the previous/next period is linked to this one
 				ct.day = day;
-				ct.occurence = occurence;
+				ct.occurrence = occurrence;
 				ct.room = room;
 				if (period == null)
 				{
-					trace ('Period was null while doing CTime for ${sc.fullName} (${sc.shortName}): $day pos(${row.QROW}) Y${sc.yeargroup} .... Skipping this classtime ($occurence)');
+					trace ('Period was null while doing CTime for ${sc.fullName} (${sc.shortName}): $day pos(${row.QROW}) Y${sc.yeargroup} .... Skipping this classtime ($occurrence)');
 					continue;
 				}
 				ct.period = period;
 				ct.schoolClass = sc;
 				ct.teacher = teacher;
 				ct.save();
-				trace ('  $classTimeAction CTime${sc.fullName}[${ct.occurence}]: $day, ${period.name}, ${ct.teacher.dbKey}.');
+				trace ('  $classTimeAction CTime${sc.fullName}[${ct.occurrence}]: $day, ${period.name}, ${ct.teacher.dbKey}.');
 			}
 		}
 
@@ -1428,7 +1417,7 @@ class MazeImport
 				if ( !ctData.b ) {
 					// Not saved, go ahead and delete it!
 					var ct = ctData.a;
-					trace ('  Deleted CTime${sc.sc.fullName}[${ct.occurence}]: ${ct.day}, ${ct.period.name}, ${ct.teacher.dbKey}.');
+					trace ('  Deleted CTime${sc.sc.fullName}[${ct.occurrence}]: ${ct.day}, ${ct.period.name}, ${ct.teacher.dbKey}.');
 					ctData.a.delete();
 				}
 			}
@@ -1441,8 +1430,8 @@ class MazeImport
 				var ct = ctData.a;
 				if ( ct.period!=null ) {
 					// If this is not the final occurance, check if a double period immediately follows
-					if ( ct.occurence<sc.sc.frequency ) {
-						var nextCTData = sc.cts[ct.occurence + 1];
+					if ( ct.occurrence<sc.sc.frequency ) {
+						var nextCTData = sc.cts[ct.occurrence + 1];
 						var nextCT = (nextCTData!=null) ? nextCTData.a : null;
 						if ( nextCT!=null && nextCT.period!=null && nextCT.period.number!=null ) {
 							var isSameDay = nextCT.day == ct.day;
@@ -1465,7 +1454,7 @@ class MazeImport
 						}
 					}
 				}
-				else trace ('For classtime $ct (schoolclass: [${sc.sc.dbKey}] ${sc.sc.fullName}, occurence ${ct.occurence}): period is null');
+				else trace ('For classtime $ct (schoolclass: [${sc.sc.dbKey}] ${sc.sc.fullName}, occurrence ${ct.occurrence}): period is null');
 			}
 		}
 	}

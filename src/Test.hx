@@ -1,5 +1,6 @@
 import sys.db.*;
 import haxe.Utf8;
+import modelschool.core.imports.MazeImport;
 
 class Test {
 	static function main() {
