@@ -1554,9 +1554,9 @@ class MazeImport
 		this.doCleanuprollgroups();
 	}
 
-	public function doSetupfromscratch(confirm:String, username:String, password:String, firstName:String, lastName:String)
+	public function doSetupfromscratch(username:String, password:String, firstName:String, lastName:String)
 	{
-		doRemovealluserdata(confirm);
+		doRemovealluserdata();
 
 		// Run Full import.
 		// Only difference from partImport is that it changes the way periods are structured.
@@ -1581,34 +1581,30 @@ class MazeImport
 		importSubjectsClassesAndRollgroups();
 	}
 
-	public function doRemovealluserdata(confirm:String)
+	public function doRemovealluserdata()
 	{
-		if (confirm == "thisisdangerous")
-		{
-			Group.manager.delete(true);
-			Permission.manager.delete(true);
-			User.manager.delete(true);
-			ClassTime.manager.delete(true);
-			Department.manager.delete(true);
-			Family.manager.delete(true);
-			Person.manager.delete(true);
-			Period.manager.delete(true);
-			RollGroup.manager.delete(true);
-			Room.manager.delete(true);
-			SchoolClass.manager.delete(true);
-			SchoolHouse.manager.delete(true);
-			StaffMember.manager.delete(true);
-			StaffMemberProfile.manager.delete(true);
-			Student.manager.delete(true);
-			StudentPhoto.manager.delete(true);
-			StudentProfile.manager.delete(true);
-			Subject.manager.delete(true);
+		Group.manager.delete(true);
+		Permission.manager.delete(true);
+		User.manager.delete(true);
+		ClassTime.manager.delete(true);
+		Department.manager.delete(true);
+		Family.manager.delete(true);
+		Person.manager.delete(true);
+		Period.manager.delete(true);
+		RollGroup.manager.delete(true);
+		Room.manager.delete(true);
+		SchoolClass.manager.delete(true);
+		SchoolHouse.manager.delete(true);
+		StaffMember.manager.delete(true);
+		StaffMemberProfile.manager.delete(true);
+		Student.manager.delete(true);
+		StudentPhoto.manager.delete(true);
+		StudentProfile.manager.delete(true);
+		Subject.manager.delete(true);
 
-			sys.db.Manager.cnx.request("DELETE FROM `_join_Department_StaffMember` WHERE 1");
-			sys.db.Manager.cnx.request("DELETE FROM `_join_Group_User` WHERE 1");
-			sys.db.Manager.cnx.request("DELETE FROM `_join_SchoolClass_Student` WHERE 1");
-		}
-		else throw "Please type 'thisisdangerous' into the confirm field if you really want to break everything ever.";
+		sys.db.Manager.cnx.request("DELETE FROM `_join_Department_StaffMember` WHERE 1");
+		sys.db.Manager.cnx.request("DELETE FROM `_join_Group_User` WHERE 1");
+		sys.db.Manager.cnx.request("DELETE FROM `_join_SchoolClass_Student` WHERE 1");
 	}
 
 	function sanitiseString(str:String)

@@ -1,19 +1,50 @@
 import sys.db.*;
 import haxe.Utf8;
 import modelschool.core.imports.MazeImport;
+import modelschool.core.api.DatabaseSetupApi;
 
 class Test {
 	static function main() {
-		Manager.cnx = Mysql.connect({
+		var mazeCnx = Mysql.connect({
 			host: 'db_1',
 			user: 'root',
 			pass: 'root',
 			database: 'modelschool_test_maze1'
 		});
-		var studentResults = Manager.cnx.request('SELECT first_name, pref_name, surname FROM ST WHERE status="FULL"');
-		for (s in studentResults.results()) {
-			var s = Utf8.encode(Std.string(s));
-			Sys.println('$s<br>');
-		}
+		var modelSchoolCnx = Mysql.connect({
+			host: 'db_1',
+			user: 'root',
+			pass: 'root',
+			database: 'modelschool'
+		});
+
+		sys.db.Manager.cnx = modelSchoolCnx;
+
+		// Set up the modelschool database tables.
+		var api = new DatabaseSetupApi();
+		api.setupDatabase();
+
+		// Set up a mazeimport
+		var mazeImporter = new MazeImport({
+			schoolInfo: {
+				shortName: 'MTS',
+				domain: 'mazetestschool.edu'
+			},
+			schoolSetup: {
+				yeargroups: {
+					primary: [0, 1, 2, 3, 4, 5, 6],
+					secondary: [7, 8, 9, 10, 11, 12]
+				},
+				homeroom: {
+					periodNumbers: [1]
+				}
+			},
+			features: {
+				primaryTimetables: false
+			},
+			usernameCorrections: new Map()
+		}, mazeCnx, modelSchoolCnx);
+
+		mazeImporter.doSetupfromscratch('admin', 'pass', 'Admin', 'User');
 	}
 }
