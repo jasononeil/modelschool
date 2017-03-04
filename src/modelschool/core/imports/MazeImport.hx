@@ -514,6 +514,8 @@ class MazeImport
 			{
 				action = "Created";
 				family = new Family();
+				family.save();
+				allCurrentFamilies.push(family);
 			}
 			else action = "Updated";
 
@@ -530,6 +532,7 @@ class MazeImport
 			mother.phone = sanitiseString(row.MMOBILE);
 			mother.person.save();
 			mother.save();
+			family.parents.add(mother);
 			var fatherEmail = sanitiseString(row.F_EMAIL);
 			var father = getOrCreateParent(allCurrentParents, family.dbKey + '_F', fatherEmail);
 			father.person.firstName = sanitiseString(row.FNAME);
@@ -538,6 +541,7 @@ class MazeImport
 			father.phone = sanitiseString(row.FMOBILE);
 			father.person.save();
 			father.save();
+			family.parents.add(father);
 
 			// TODO: support work phone numbers.
 			// sanitiseString(row.MBUS_PHONE);
