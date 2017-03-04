@@ -4,6 +4,7 @@
     "haxe.displayConfigurations": [
         ["api-php.hxml"],
         ["api-neko.hxml"],
-        ["test-php.hxml"]
+        ["test-php.hxml"],
+        ["test-neko.hxml"]
     ],
 }
