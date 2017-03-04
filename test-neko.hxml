@@ -1,0 +1,8 @@
+-lib ufront-orm
+-lib ufront-easyauth
+-lib cleversort
+-lib record-macros
+-D server
+-cp src
+-neko bin/test.n
+-main Test

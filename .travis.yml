@@ -68,6 +68,8 @@ install:
 script:
   - haxe api-neko.hxml
   - haxe api-php.hxml
+  - haxe test-php.hxml
+  - haxe test-neko.hxml
   #- haxe build-neko.hxml         && neko bin/HelloWorld.n
   #- haxe build-js.hxml           && node bin/HelloWorld.js
   #                               && haxe phantomjs/run.hxml bin/HelloWorld.js
