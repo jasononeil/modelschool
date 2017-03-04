@@ -468,6 +468,7 @@ class MazeImport
 		var allCurrentFamilies = Family.manager.all();
 		var allCurrentParents = Parent.manager.all();
 		var allCurrentHomes = Home.manager.all();
+		var allCurrentLocations = Location.manager.all();
 
 		var i = 0;
 		for (r in homeRows)
@@ -475,32 +476,42 @@ class MazeImport
 			var row:Dynamic = r;
 			i++;
 			var action:String;
-			var h:Home = allCurrentHomes.filter(function (home) return home.dbKey == row.UMKEY).first();
-			if (h == null)
+			var home = allCurrentHomes.filter(function (home) return home.dbKey == row.UMKEY).first();
+			if (home == null)
 			{
 				action = "Created";
-				h = new Home();
-				allCurrentHomes.push( h );
+				home = new Home();
+				allCurrentHomes.push( home );
+				var locationKey = 'HOME_' + row.UMKEY;
+				var location = allCurrentLocations.filter(function (l) return l.dbKey == locationKey).first();
+				if (location == null) {
+					location = new Location();
+					location.dbKey = locationKey;
+					location.save();
+					allCurrentLocations.push(location);
+				}
+				home.location = location;
 			}
 			else action = "Updated";
 
-			h.dbKey = row.UMKEY;
-			h.state = sanitiseString( row.STATE );
-			h.postcode = sanitiseString( row.POSTCODE );
-			h.phone = sanitiseString( row.TELEPHONE );
-			h.fax = sanitiseString( row.FAX );
+			home.dbKey = row.UMKEY;
+			home.location.state = sanitiseString( row.STATE );
+			home.location.zip = sanitiseString( row.POSTCODE );
+			home.phone = sanitiseString( row.TELEPHONE );
+			home.fax = sanitiseString( row.FAX );
 
 			var address01 = sanitiseString( row.ADDRESS01 );
 			var address02 = sanitiseString( row.ADDRESS02 );
 			var address03 = sanitiseString( row.ADDRESS03 );
 
-			h.address = "";
-			if ( address01!="" ) h.address += address01;
-			if ( address02!="" ) h.address += "\n"+address02;
-			if ( address03!="" ) h.address += "\n"+address03;
+			var address = "";
+			if ( address01!="" ) address += address01;
+			if ( address02!="" ) address += "\n"+address02;
+			if ( address03!="" ) address += "\n"+address03;
+			home.location.address = address;
 
-			h.save();
-			trace ('$action Home ${h.dbKey} ($i/$homeCount)');
+			home.save();
+			trace ('$action Home ${home.dbKey} ($i/$homeCount)');
 		}
 
 		var i = 0;
