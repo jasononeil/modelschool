@@ -6,8 +6,8 @@ import modelschool.core.model.*;
 
 class Home extends Object
 {
-	public var dbKey:String;
-	public var address:BelongsTo<Location>;
-	public var phone:SString<20>;
-	public var fax:SString<20>;
+	public var dbKey:Null<SString<20>>;
+	public var location:Null<BelongsTo<Location>>;
+	public var phone:Null<SString<20>>;
+	public var fax:Null<SString<20>>;
 }
